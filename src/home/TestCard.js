@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 function TestCard({ id, name, shortDescription, metadata }) {
     return (
         <div className='test-card'>
-            <p style={{ color: '#888', 'font-weight': 'bolder' }}>
+            <p style={{ color: '#888', fontWeight: 'bolder' }}>
                 {id}
             </p>
             <Link to={`/test/${id}`}>

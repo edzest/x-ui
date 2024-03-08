@@ -18,7 +18,7 @@ function Questionnaire() {
             .then(response => response.json())
             .then(data => setQuestions(data['questions']))
             .catch(error => console.error(error));
-    }, []);
+    }, [id]);
 
     const handleNext = () => {
         console.log(answers)
