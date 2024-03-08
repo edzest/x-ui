@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import './questionnaire.css';
 
 function Questionnaire() {
@@ -7,9 +7,10 @@ function Questionnaire() {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [answers, setAnswers] = useState([]);
     const navigate = useNavigate();
+    const {id} = useParams()
 
     useEffect(() => {
-        fetch('/tests/1251', {
+        fetch(`/tests/${id}`, {
             headers: {
                 'Authorization': `Bearer ${process.env.REACT_APP_API_TOKEN}`
             }
@@ -38,7 +39,7 @@ function Questionnaire() {
 
     const handleSubmit = () => {
         console.log(answers)
-        fetch('/tests/1251:evaluate', {
+        fetch(`/tests/${id}:evaluate`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

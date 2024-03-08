@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import './testResult.css';
 
 function TestResult() {
@@ -24,6 +24,8 @@ function TestResult() {
                     <p>Explanation: {item.question.explanation}</p>
                 </div>
             ))}
+
+            <Link to="/">Go to Home</Link>
         </div>
     );
 }
