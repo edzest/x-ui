@@ -10,7 +10,7 @@ function Questionnaire() {
     const {id} = useParams()
 
     useEffect(() => {
-        fetch(`/tests/${id}`, {
+        fetch(`${process.env.getREACT_APP_API_BASE}/tests/${id}`, {
             headers: {
                 'Authorization': `Bearer ${process.env.REACT_APP_API_TOKEN}`
             }
@@ -39,7 +39,7 @@ function Questionnaire() {
 
     const handleSubmit = () => {
         console.log(answers)
-        fetch(`/tests/${id}:evaluate`, {
+        fetch(`${process.env.getREACT_APP_API_BASE}/tests/${id}:evaluate`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

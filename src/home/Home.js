@@ -6,7 +6,7 @@ function Home() {
     const [tests, setTests] = useState([]);
 
     useEffect(() => {
-        fetch('/tests', {
+        fetch(`${process.env.REACT_APP_API_BASE}/tests`, {
             headers: {
                 'Authorization': `Bearer ${process.env.REACT_APP_API_TOKEN}`
             }
