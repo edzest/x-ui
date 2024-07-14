@@ -1,21 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import './Home.css';
-import TestCard from './TestCard';
+import {TEST} from '../constants/constants';
+import TestCard from '../test-card/TestCard';
 
 function Home() {
-    const [tests, setTests] = useState([]);
-
-    useEffect(() => {
-        fetch(`${process.env.REACT_APP_API_BASE}/tests`, {
-            headers: {
-                'Authorization': `Bearer ${process.env.REACT_APP_API_TOKEN}`
-            }
-        })
-            .then(response => response.json())
-            .then(data => setTests(data.tests))
-            .catch(error => console.error(error));
-    }, []);
-
+    const tests = TEST || [];
     return (
         <div className='home'>
             <h1>Exam Platform</h1>
