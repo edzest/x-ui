@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import './questionnaire.css';
-import { TEST } from './constants/constants';
+import { TEST } from '../constants/constants';
 
 function Questionnaire() {
     const [questions, setQuestions] = useState([]);
