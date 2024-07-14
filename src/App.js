@@ -1,7 +1,7 @@
 import './App.css';
 import Home from './home/Home';
-import Questionnaire from './questionnaire';
-import TestResult from './testResult';
+import Questionnaire from './questionnaire/questionnaire';
+import TestResult from './test-result/testResult';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 

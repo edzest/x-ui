@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import './questionnaire.css';
+import { TEST } from '../constants/constants';
 
 function Questionnaire() {
     const [questions, setQuestions] = useState([]);
@@ -10,13 +11,10 @@ function Questionnaire() {
     const {id} = useParams()
 
     useEffect(() => {
-        fetch(`${process.env.REACT_APP_API_BASE}/tests/${id}`, {
-            headers: {
-                'Authorization': `Bearer ${process.env.REACT_APP_API_TOKEN}`
-            }
-        })
-            .then(response => response.json())
-            .then(data => setQuestions(data['questions']))
+            new Promise((resolve, reject) => {
+                resolve(TEST[0]);
+            })
+            .then(data => {console.log(data); setQuestions(data['questions'])})
             .catch(error => console.error(error));
     }, [id]);
 
