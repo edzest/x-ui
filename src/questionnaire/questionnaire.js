@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import './questionnaire.css';
-import { TEST } from '../constants/constants';
+import { TEST } from './constants/constants';
 
 function Questionnaire() {
     const [questions, setQuestions] = useState([]);
@@ -14,7 +14,7 @@ function Questionnaire() {
             new Promise((resolve, reject) => {
                 resolve(TEST[0]);
             })
-            .then(data => {console.log(data); setQuestions(data['questions'])})
+            .then(data => setQuestions(data['questions']))
             .catch(error => console.error(error));
     }, [id]);
 
@@ -36,21 +36,20 @@ function Questionnaire() {
     };
 
     const handleSubmit = () => {
-        console.log(answers)
-        fetch(`${process.env.REACT_APP_API_BASE}/tests/${id}:evaluate`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${process.env.REACT_APP_API_TOKEN}`
-            },
-            body: JSON.stringify(answers)
+        console.log(answers);
+        new Promise((resolve, reject) => {
+            resolve({
+                name: "Something",
+                score: 9,
+                total: 10,
+                answerSheet: []
+            });
         })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                navigate('/result', { state: {result: data} });
-            })
-            .catch(error => console.error(error));
+        .then(data => {
+            console.log(data);
+            navigate('/result', { state: {result: data} });
+        })
+        .catch(error => console.error(error));
     };
 
     if (!questions.length) return <div>Loading...</div>;
