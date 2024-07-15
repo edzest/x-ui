@@ -5,9 +5,22 @@ import { TEST } from '../constants/constants';
 function Questionnaire() {
     const [questions, setQuestions] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [answers, setAnswers] = useState([]);
+    const [answers, setAnswers] = useState({});
     const navigate = useNavigate();
-    const { id } = useParams()
+    const { id } = useParams();
+
+    // temporarily evaluating test on UI until we host BE somewhere
+    const evaluateTest = (answers) => {
+        var score = 0;
+        for (const [qId, aId] of Object.entries(answers)) {
+            const q = TEST[0].questions.find(q => q.id === qId)
+            if (q.correctOptionId === aId) {
+                score++;
+            }
+        }
+        console.log("you scored " + score )
+        return score;
+    };
 
     useEffect(() => {
         new Promise((resolve, reject) => {
@@ -44,9 +57,10 @@ function Questionnaire() {
     const handleSubmit = () => {
         console.log(answers);
         new Promise((resolve, reject) => {
+            const score = evaluateTest(answers);
             resolve({
-                name: "Something",
-                score: 9,
+                name: "Demo Test",
+                score: score,
                 total: 10,
                 answerSheet: []
             });
