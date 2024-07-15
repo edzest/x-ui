@@ -54,7 +54,7 @@ function Questionnaire() {
     if (!questions.length) return <div>Loading...</div>;
 
     return (
-        <div className='max-w-screen-md mx-auto'>
+        <div className='container mx-auto prose'>
             <h4>{`Q ${currentIndex + 1}: ${questions[currentIndex].text}`}</h4>
             <div className='my-6'>
                 {questions[currentIndex].options.map((option, index) => (
