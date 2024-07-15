@@ -1,5 +1,4 @@
 import React from 'react';
-import './TestCard.css';
 import { Link } from 'react-router-dom';
 
 function TestCard({ id, name, shortDescription, metadata }) {
@@ -12,7 +11,7 @@ function TestCard({ id, name, shortDescription, metadata }) {
                 <h2>{name}</h2>
             </Link>
             <p>{shortDescription}</p>
-            <div className='metadata'>
+            <div>
                 <span>{metadata.totalQuestions} questions</span>
                 <span>{metadata.totalMarks} marks</span>
                 <span>{metadata.totalTime} seconds</span>

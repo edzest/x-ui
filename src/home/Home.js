@@ -1,12 +1,11 @@
 import React from 'react';
-import './Home.css';
 import {TEST} from '../constants/constants';
 import TestCard from '../test-card/TestCard';
 
 function Home() {
     const tests = TEST || [];
     return (
-        <div className='home'>
+        <div>
             <h1>Exam Platform</h1>
             {tests.map((test, index) => (
                 <div key={index}>

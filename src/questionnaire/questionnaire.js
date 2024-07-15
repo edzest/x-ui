@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import './questionnaire.css';
 import { TEST } from '../constants/constants';
 
 function Questionnaire() {
@@ -55,22 +54,27 @@ function Questionnaire() {
     if (!questions.length) return <div>Loading...</div>;
 
     return (
-        <div className='questionnaire-container'>
-            <h2>{`Q ${currentIndex + 1}: ${questions[currentIndex].text}`}</h2>
-            {questions[currentIndex].options.map((option, index) => (
-                <div key={index}>
-                    <label>
-                        <input type="radio"
-                            value={option.id}
-                            checked={answers[currentIndex + 1] === option.id}
-                            onChange={handleOptionChange} />
-                        {option.text}
-                    </label>
-                </div>
-            ))}
-            <button onClick={handlePrevious} disabled={currentIndex === 0}>Previous</button>
-            <button onClick={handleNext} disabled={currentIndex === questions.length - 1}   >Next</button>
-            {currentIndex === questions.length - 1 && <button onClick={handleSubmit}>Submit</button>}
+        <div className='max-w-screen-md mx-auto'>
+            <h4>{`Q ${currentIndex + 1}: ${questions[currentIndex].text}`}</h4>
+            <div className='my-6'>
+                {questions[currentIndex].options.map((option, index) => (
+                    <div key={index}>
+                        <label className='flex my-3'>
+                            <input type="radio"
+                                className='radio radio-primary mr-3'
+                                value={option.id}
+                                checked={answers[currentIndex + 1] === option.id}
+                                onChange={handleOptionChange} />
+                            {option.text}
+                        </label>
+                    </div>
+                ))}
+            </div>
+            <div className='flex justify-between'>
+                <button onClick={handlePrevious} disabled={currentIndex === 0} className='btn flex-initial'>Previous</button>
+                {currentIndex < questions.length - 1 && <button onClick={handleNext} disabled={currentIndex === questions.length - 1} className='btn btn-primary flex-initial'>Next</button>}
+                {currentIndex === questions.length - 1 && <button onClick={handleSubmit} className='btn btn-primary flex-initial'>Submit</button>}
+            </div>
         </div>
     );
 }
