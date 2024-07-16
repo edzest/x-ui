@@ -75,7 +75,7 @@ function Questionnaire() {
     if (!questions.length) return <div>Loading...</div>;
 
     return (
-        <div className='container px-4 mx-auto prose flex flex-col min-h-screen sm:block'>
+        <div className='container px-4 mx-auto prose sm:block'>
             <div className='text-right'>
                 <button className='btn btn-ghost btn-circle text-3xl font-light m-4'
                     onClick={() => document.getElementById('my_modal_1').showModal()}>X</button>
@@ -96,7 +96,7 @@ function Questionnaire() {
                     </div>
                 ))}
             </div>
-            <div className='grid-cols-3 grid gap-4 mt-auto mb-10 md:flex md:justify-between'>
+            <div className='grid-cols-3 grid gap-4 mb-10 md:flex md:justify-between'>
                 <button onClick={handlePrevious} disabled={currentIndex === 0} className='btn md:flex-inital'>Previous</button>
                 <button onClick={handleClear} className='btn btn-ghost'>Clear</button>
                 {currentIndex < questions.length - 1 && <button onClick={handleNext} disabled={currentIndex === questions.length - 1} className='btn btn-primary md:flex-initial'>Next</button>}
