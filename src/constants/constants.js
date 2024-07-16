@@ -253,6 +253,58 @@ export const TEST = [
         ],
         "text": "The agile team is conducting a retrospective at the end of the project. What is the primary goal of the retrospective?"
       }
+    ],
+    "matchingQuestions": [
+      {
+        "explanation": "Explanation 1",
+        "id": "11",
+        "answers": [
+          {
+            "leftId": "1",
+            "rightId": "3"
+          },
+          {
+            "leftId": "2",
+            "rightId": "4"
+          }
+        ],
+        "leftOptions": [
+          {
+            "id": "1",
+            "text": "Karachi"
+          },
+          {
+            "id": "2",
+            "text": "Delhi"
+          },
+          {
+            "id": "3",
+            "text": "Kathmandu"
+          },
+          {
+            "id": "4",
+            "text": "Columbo"
+          }
+        ],
+        "rightOptions": [
+          {
+            "id": "1",
+            "text": "India"
+          },
+          {
+            "id": "2",
+            "text": "Sri-Lanka"
+          },
+          {
+            "id": "3",
+            "text": "Paxtan"
+          },
+          {
+            "id": "4",
+            "text": "Nepal"
+          }
+        ],
+      }
     ]
   }
 ]

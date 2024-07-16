@@ -1,5 +1,6 @@
 import Home from './home/Home';
 import Landing from './landing/Landing';
+import MatchingQuestion from './matching-question/MatchingQuestion';
 import Questionnaire from './questionnaire/questionnaire';
 import TestResult from './test-result/testResult';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
@@ -15,6 +16,7 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/test/:id" element={<Questionnaire/>} />
           <Route path="/result" element={<TestResult />} />
+          <Route path="/matching" element={<MatchingQuestion />} />
         </Routes>
       </Router>
 
