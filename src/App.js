@@ -1,6 +1,7 @@
 import Home from './home/Home';
 import Landing from './landing/Landing';
 import Questionnaire from './questionnaire/questionnaire';
+import Solution from './solution/Solution';
 import TestResult from './test-result/testResult';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
@@ -15,6 +16,7 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/test/:id" element={<Questionnaire/>} />
           <Route path="/result" element={<TestResult />} />
+          <Route path="/solution" element={<Solution />} />
         </Routes>
       </Router>
 
