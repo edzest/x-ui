@@ -9,7 +9,7 @@ function Nav() {
                     <Link to={"/"}>
                     edzest <span className='font-light'>exams</span>
                     </Link>
-                    <div className="tooltip tooltip-right" data-tip="this application is under active development">
+                    <div className="tooltip tooltip-bottom" data-tip="this application is under active development">
                         <div className="badge badge-secondary badge-outline badge-xs align-super m-2">alpha</div>
                     </div>
                 </h1>
