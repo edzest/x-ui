@@ -19,7 +19,7 @@ function Questionnaire() {
             }
 
             // setting selected answers
-            const a = ASNWER_SHEET.find(a => a.question.id === qId);
+            let a = ASNWER_SHEET.find(a => a.question.id === qId);
             a.selectedAnswerId = aId;
         }
         console.log("you scored " + score )
