@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { TEST } from '../constants/constants';
+import { TEST, ASNWER_SHEET } from '../constants/constants';
 
 function Questionnaire() {
     const [questions, setQuestions] = useState([]);
@@ -17,6 +17,10 @@ function Questionnaire() {
             if (q.correctOptionId === aId) {
                 score++;
             }
+
+            // setting selected answers
+            const a = ASNWER_SHEET.find(a => a.question.id === qId);
+            a.selectedAnswerId = aId;
         }
         console.log("you scored " + score )
         return score;

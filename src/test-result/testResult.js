@@ -54,7 +54,10 @@ function TestResult() {
                     ))}
                     <br />
                     <Link to="/solution">
-                        <button className='btn btn-primary'>View Solution</button>
+                        <button className='btn btn-primary m-2'>View Solution</button>
+                    </Link>
+                    <Link to="/">
+                        <button className='btn btn-ghost m-2'>Back to Home</button>
                     </Link>
                 </div>
                 

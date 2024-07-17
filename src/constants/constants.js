@@ -284,7 +284,7 @@ export const ASNWER_SHEET = [
           "correctOptionId": "3",
           "explanation": "sample explanation text for q1"
       },
-      "selectedAnswerId": "3"
+      "selectedAnswerId": ""
   },
   {
       "question": {
@@ -311,7 +311,7 @@ export const ASNWER_SHEET = [
           "correctOptionId": "3",
           "explanation": "sample explanation text for q2"
       },
-      "selectedAnswerId": "2"
+      "selectedAnswerId": ""
   },
   {
       "question": {
@@ -338,7 +338,7 @@ export const ASNWER_SHEET = [
           "correctOptionId": "2",
           "explanation": "sample explanation text for q3"
       },
-      "selectedAnswerId": "1"
+      "selectedAnswerId": ""
   },
   {
       "question": {
@@ -392,7 +392,7 @@ export const ASNWER_SHEET = [
           "correctOptionId": "3",
           "explanation": "sample explanation text for q5"
       },
-      "selectedAnswerId": "3"
+      "selectedAnswerId": ""
   },
   {
       "question": {
@@ -419,7 +419,7 @@ export const ASNWER_SHEET = [
           "correctOptionId": "1",
           "explanation": "sample explanation text for q6"
       },
-      "selectedAnswerId": "1"
+      "selectedAnswerId": ""
   },
   {
       "question": {
@@ -446,7 +446,7 @@ export const ASNWER_SHEET = [
           "correctOptionId": "2",
           "explanation": "sample explanation text"
       },
-      "selectedAnswerId": "2"
+      "selectedAnswerId": ""
   },
   {
       "question": {
@@ -473,7 +473,7 @@ export const ASNWER_SHEET = [
           "correctOptionId": "3",
           "explanation": "sample explanation text"
       },
-      "selectedAnswerId": "3"
+      "selectedAnswerId": ""
   },
   {
       "question": {
@@ -500,7 +500,7 @@ export const ASNWER_SHEET = [
           "correctOptionId": "2",
           "explanation": "sample explanation text"
       },
-      "selectedAnswerId": "2"
+      "selectedAnswerId": ""
   },
   {
       "question": {
