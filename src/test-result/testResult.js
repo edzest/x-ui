@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Nav from '../common/Nav';
 import Footer from '../common/Footer';
+import { PopupButton } from "react-calendly";
 
 function TestResult() {
     const location = useLocation();
@@ -34,33 +35,32 @@ function TestResult() {
                             <h2 className='font-bold'>TOTAL</h2>
                             <p>{result.total}</p>
                         </div>
-                        
-                    </div>
 
-                    {result.answerSheet.map((item, index) => (
-                        <div key={index}>
-                            <h4>Q {index + 1}: {item.question.text}</h4>
-                            <ul>
-                                {item.question.options.map((option, i) => (
-                                    <li key={i}>
-                                        {option.text}
-                                        {option.id === item.question.correctOptionId && <b> [Correct]</b>}
-                                        {option.id === item.selectedAnswerId && <b> [Selected]</b>}
-                                    </li>
-                                ))}
-                            </ul>
-                            <p>Explanation: {item.question.explanation}</p>
-                        </div>
-                    ))}
+                    </div>
+                    <br />
+                    <p className="prose mx-auto">
+                        Thanks for taking our demo test. You can now view detailed solutions and schedule a one-on-one call with our expert
+                        to review your result in detail.
+                    </p>
                     <br />
                     <Link to="/solution">
-                        <button className='btn btn-primary m-2'>View Solution</button>
+                        <button className='btn btn-link m-2'>View Solution</button>
                     </Link>
-                    <Link to="/">
-                        <button className='btn btn-ghost m-2'>Back to Home</button>
-                    </Link>
+                    {/* <button className='btn btn-primary m-2' onClick={() => {Calendly.initPopupWidget({url: 'https://calendly.com/piyushranjan95'}); return false;}}>Schedule a meeting</button> */}
+                    <PopupButton
+                    className='btn btn-primary'
+                        url="https://calendly.com/piyushranjan95"
+                        /*
+                        * react-calendly uses React's Portal feature (https://reactjs.org/docs/portals.html) to render the popup modal. As a result, you'll need to
+                        * specify the rootElement property to ensure that the modal is inserted into the correct domNode.
+                        */
+                        rootElement={document.getElementById("root")}
+                        text="Schedule a meeting"
+
+                    />
+                    <br />
+
                 </div>
-                
             </div>
             <div className='mt-auto'>
                 <Footer />
