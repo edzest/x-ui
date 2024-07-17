@@ -3,18 +3,44 @@ import Nav from '../common/Nav';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ASNWER_SHEET } from '../constants/constants';
 
+let count = 0;
+
 function Solution() {
+    count++;
+    console.log("component render number: ", count);
+    
     const location = useLocation();
     const navigate = useNavigate();
     const answerSheet = location.state ? location.state.answerSheet : ASNWER_SHEET;
     const [currentIndex, setCurrentIndex] = useState(0);
+    // status says whether the answer is correct, incorrect or unattempted
+    const checkAnswer = () => {
+        const selectedAnswer = answerSheet[currentIndex].selectedAnswerId;
+        const correctAnswer = answerSheet[currentIndex].question.correctOptionId;
+        if (selectedAnswer === "" || selectedAnswer === null || selectedAnswer === undefined) {
+            return <h4 className='text-gray-500'>DID NOT ATTEMPT</h4>;
+        }
+        if (selectedAnswer === correctAnswer) {
+            return <h4 className='text-success'>CORRECT</h4>
+        } else {
+            return <h4 className='text-error'>INCORRECT</h4>;
+        }
+    }
+
+    const [status, setStatus] = useState(checkAnswer());
 
     const handleNext = () => {
         setCurrentIndex((currentIndex + 1) % answerSheet.length);
+        console.log("current index is ", currentIndex);
+        setStatus(checkAnswer());
     };
 
     const handlePrevious = () => {
-        setCurrentIndex((currentIndex - 1 + answerSheet.length) % answerSheet.length);
+        if (currentIndex > 0) {
+            setCurrentIndex(currentIndex - 1);
+            console.log("current index is ", currentIndex);
+            setStatus(checkAnswer());
+        }
     };
 
     return (
@@ -29,6 +55,9 @@ function Solution() {
                         <button onClick={() => navigate(-1)} className='btn btn-ghost btn-circle text-3xl font-light m-4'>X</button>
                     </div>
                     <hr className='mt-0' />
+                    <div>
+                        {status}
+                    </div>
                     <h4>{`Q ${currentIndex + 1}: ${answerSheet[currentIndex].question.text}`}</h4>
                     <div className='my-6'>
                         {answerSheet[currentIndex].question.options.map((option, index) => (
