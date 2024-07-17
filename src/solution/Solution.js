@@ -63,11 +63,11 @@ function Solution() {
                                         disabled />
                                     {option.id === answerSheet[currentIndex].selectedAnswerId &&
                                         (answerSheet[currentIndex].selectedAnswerId === answerSheet[currentIndex].question.correctOptionId ?
-                                            <div class="tooltip tooltip-top" data-tip="You selected the right answer">
+                                            <div class="tooltip tooltip-right" data-tip="You selected the right answer">
                                                 <span className='mr-4'>✅</span>
                                             </div>
                                             :
-                                            <div class="tooltip tooltip-top" data-tip="You selected this incorrect answer">
+                                            <div class="tooltip tooltip-right" data-tip="You selected this incorrect answer">
                                                 <span className='mr-4'>❌</span>
                                             </div>)
 
