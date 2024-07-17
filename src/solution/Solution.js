@@ -3,17 +3,12 @@ import Nav from '../common/Nav';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ASNWER_SHEET } from '../constants/constants';
 
-let count = 0;
-
 function Solution() {
-    count++;
-    console.log("component render number: ", count);
-    
     const location = useLocation();
     const navigate = useNavigate();
     const answerSheet = location.state ? location.state.answerSheet : ASNWER_SHEET;
     const [currentIndex, setCurrentIndex] = useState(0);
-    // status says whether the answer is correct, incorrect or unattempted
+
     const checkAnswer = () => {
         const selectedAnswer = answerSheet[currentIndex].selectedAnswerId;
         const correctAnswer = answerSheet[currentIndex].question.correctOptionId;
@@ -27,19 +22,19 @@ function Solution() {
         }
     }
 
-    const [status, setStatus] = useState(checkAnswer());
+    let status = checkAnswer();
 
     const handleNext = () => {
         setCurrentIndex((currentIndex + 1) % answerSheet.length);
         console.log("current index is ", currentIndex);
-        setStatus(checkAnswer());
+        status = checkAnswer();
     };
 
     const handlePrevious = () => {
         if (currentIndex > 0) {
             setCurrentIndex(currentIndex - 1);
             console.log("current index is ", currentIndex);
-            setStatus(checkAnswer());
+            status = checkAnswer();
         }
     };
 
