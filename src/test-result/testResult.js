@@ -21,7 +21,7 @@ function TestResult() {
                 <div className='text-center border p-4'>
                     {/* radial score */}
                     <div className="radial-progress bg-primary text-primary-content border-primary"
-                        style={{ "--value": percent, "--size": "12rem", "--thickness": "1rem", "border-width": "10px" }}
+                        style={{ "--value": percent, "--size": "12rem", "--thickness": "1rem", "borderWidth": "10px" }}
                         role="progressbar">
                         <p className='text-3xl font-bold'>{percent}%</p>
                     </div>

@@ -21,16 +21,25 @@ function Questionnaire() {
             // setting selected answers
             let a = ASNWER_SHEET.find(a => a.question.id === qId);
             a.selectedAnswerId = aId;
+            console.log("setting aId = ", aId, " to qId = ", qId);
         }
         console.log("you scored " + score )
         return score;
     };
+
+    // temporarily reset answers
+    const resetAnswers = () => {
+        ASNWER_SHEET.forEach(a => {
+            a.selectedAnswerId = "";
+        });
+    }
 
     useEffect(() => {
         new Promise((resolve, reject) => {
             resolve(TEST[0]);
         })
             .then(data => setQuestions(data['questions']))
+            .then(resetAnswers())
             .catch(error => console.error(error));
     }, [id]);
 
