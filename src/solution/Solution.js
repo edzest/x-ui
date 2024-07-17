@@ -18,7 +18,7 @@ function Solution() {
         if (selectedAnswer === correctAnswer) {
             return <h4 className='text-success'>CORRECT</h4>
         } else {
-            return <h4 className='text-error'>INCORRECT</h4>;
+            return <h4 className='text-error'>INCORRECT</h4>
         }
     }
 
@@ -26,14 +26,12 @@ function Solution() {
 
     const handleNext = () => {
         setCurrentIndex((currentIndex + 1) % answerSheet.length);
-        console.log("current index is ", currentIndex);
         status = checkAnswer();
     };
 
     const handlePrevious = () => {
         if (currentIndex > 0) {
             setCurrentIndex(currentIndex - 1);
-            console.log("current index is ", currentIndex);
             status = checkAnswer();
         }
     };
@@ -63,7 +61,19 @@ function Solution() {
                                         value={option.id}
                                         checked={option.id === answerSheet[currentIndex].question.correctOptionId}
                                         disabled />
+                                    {option.id === answerSheet[currentIndex].selectedAnswerId &&
+                                        (answerSheet[currentIndex].selectedAnswerId === answerSheet[currentIndex].question.correctOptionId ?
+                                            <div class="tooltip tooltip-top" data-tip="You selected the right answer">
+                                                <span className='mr-4'>✅</span>
+                                            </div>
+                                            :
+                                            <div class="tooltip tooltip-top" data-tip="You selected this incorrect answer">
+                                                <span className='mr-4'>❌</span>
+                                            </div>)
+
+                                    } 
                                     {option.text}
+
                                 </label>
                             </div>
                         ))}
