@@ -63,7 +63,7 @@ function Solution() {
                                         disabled />
                                     {option.id === answerSheet[currentIndex].question.correctOptionId
                                         &&
-                                        <div class="tooltip tooltip-right" data-tip="This is the correct answer">
+                                        <div className="tooltip tooltip-right" data-tip="This is the correct answer">
                                             <span className='mr-4'>✅</span>
                                         </div>
                                     }
