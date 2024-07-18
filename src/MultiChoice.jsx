@@ -45,6 +45,10 @@ function MultiChoice() {
 
   const handleDragEndLeft = (e) => {
     const optionDetail = JSON.parse(e.dataTransfer.getData("optionDetail"));
+    if (optionDetail.isRight == false) {
+      setLeftActive(false);
+      return;
+    }
     setLeft((pv) => [...pv, optionDetail]);
     const rightIndex = right.findIndex((c) => c?.id === optionDetail.id);
     const newRight = [...right];
