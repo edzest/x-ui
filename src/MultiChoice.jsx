@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import { motion } from 'framer-motion';
 
 function MultiChoice() {
   // TODO: handle if length of left and right are different
@@ -6,6 +7,31 @@ function MultiChoice() {
   const [left, setLeft] = useState(DEFAULT_QUESTION.leftOptions);
   const [rightOption, setRightOption] = useState(DEFAULT_QUESTION.rightOptions);
   const [right, setRight] = useState(Array(left.size).fill(null));
+  const [currentActive, setCurrentActive] = useState(-1);
+
+  const handleDragStart = (e, option) => {
+    e.dataTransfer.setData("optionDetail", JSON.stringify(option));
+  };
+
+  const handleDragOver = (e, index) => {
+    e.preventDefault();
+    setCurrentActive(index);
+  };
+
+  const handleDragLeave = (e) => {
+    setCurrentActive(-1);
+  }
+
+  const handleDragEnd = (e, index) => {
+    setCurrentActive(-1);
+    const optionDetail = JSON.parse(e.dataTransfer.getData("optionDetail"));
+    const newRight = [...right];
+    newRight[index] = optionDetail;
+    setRight(newRight);
+    setLeft((pv) => pv.filter((c) => c.id !== optionDetail.id));
+  }
+
+  
 
   return (
     <div className="flex">
@@ -13,7 +39,7 @@ function MultiChoice() {
         <div className="transition-colors w-full items-center justify-between">
          {
             left.map((leftOption) => {
-              return <Draggable key={leftOption.id} {...leftOption} />
+              return <LeftOption key={leftOption.id} {...leftOption} handleDragStart={handleDragStart}/>
             })
           }
         </div>   
@@ -21,7 +47,19 @@ function MultiChoice() {
       <div className="ml-16 w-80 shrink-0 bg-neutral-300/50">
         {
           rightOption.map((rightOption, index) => {
-            return <Droppable text={rightOption.text} index={index} setRight={setRight}  />
+            return <div key={rightOption.id} className={`relative rounded w-full h-16  flex items-center justify-content border mb-2 p-3 ${currentActive === index ? "border-orange-500 bg-yellow-300 text-orange-500" : "bg-gray-200 border-gray-900"}`}
+              onDragOver={(e) => handleDragOver(e, index)}
+              onDragLeave={handleDragLeave}
+              onDrop={(e) => handleDragEnd(e, index)}
+              >
+                {
+                  right[index] ? (
+                    <LeftOption key={right[index]?.id} {...right[index]} handleDragStart={handleDragStart}/>
+                  ) : (
+                    <div className="absolute insert-0 flex items-center justify-center text-gray-900 font-bold opacity-20 ">{rightOption.text}</div>
+                  )
+                }
+              </div>
           })
         }
       </div>
@@ -29,20 +67,19 @@ function MultiChoice() {
   );
 }
 
-const Draggable = ({id, text}) => {
+const LeftOption = ({id, text, handleDragStart}) => {
+  const [position, setPosition] = useState("left");
+
   return (
-    <div className="cursor-grab rounded border border-neutral-700 p-3 active:cursor-grabbing mb-2"><p className="">{text}</p></div>
+    <motion.div draggable="true"
+      layout
+      layoutId={id}
+      onDragStart={(e) => handleDragStart(e, {id, text, position})}
+      className="cursor-grab rounded border border-neutral-700 p-3 active:cursor-grabbing mb-2 w-full">
+      <p className="">{text}</p>
+    </motion.div>
   );
 };
-
-const Droppable = ({text, index, setRight}) => {
-  const [active, setActive] = useState(false);
-  
-  return <div className={`relative rounded w-full h-16  flex items-center justify-content border mb-2 p-3 ${active ? "border-orange-500 bg-yellow-300 text-orange-500" : "bg-gray-200 border-gray-900"}`}>
-    <div className="absolute insert-0 flex items-center justify-center text-gray-900 font-bold opacity-20 ">{text}</div>
-  </div>
-}
-
 
 const DEFAULT_QUESTION = {
   "explanation": "Explanation 1",
