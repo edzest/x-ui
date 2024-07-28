@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { TEST } from '../constants/constants';
+import { FiXCircle } from "react-icons/fi";
 
 function Questionnaire() {
     const [questions, setQuestions] = useState([]);
+    const [matchingQuestions, setMatchingQuestions] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [answers, setAnswers] = useState({});
     const navigate = useNavigate();
@@ -26,7 +28,11 @@ function Questionnaire() {
         new Promise((resolve, reject) => {
             resolve(TEST[0]);
         })
-            .then(data => setQuestions(data['questions']))
+            .then(data => {
+                setQuestions(data['questions']);
+                setMatchingQuestions(data['matchingQuestions']);
+                // sort the question in a hashmap and show accordingly
+            })
             .catch(error => console.error(error));
     }, [id]);
 
@@ -78,7 +84,7 @@ function Questionnaire() {
         <div className='container px-4 mx-auto prose flex flex-col min-h-screen sm:block'>
             <div className='text-right'>
                 <button className='btn btn-ghost btn-circle text-3xl font-light m-4'
-                    onClick={() => document.getElementById('my_modal_1').showModal()}>X</button>
+                    onClick={() => document.getElementById('my_modal_1').showModal()}><FiXCircle /></button>
             </div>
             <hr className='mt-0' />
             <h4>{`Q ${currentIndex + 1}: ${questions[currentIndex].text}`}</h4>

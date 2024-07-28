@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { motion } from 'framer-motion';
 
-const MultiChoice = ({question, updateAnswer}) =>{
+const MatchingQuestion = ({question, updateAnswer}) =>{
   const [left, setLeft] = useState(question.leftOptions);
   const [rightOption] = useState(question.rightOptions); // just for showing the option on the right side in background, is never modified by user
   const [right, setRight] = useState(Array(left.size).fill(null)); // actually stores the data on the right side and keeps modifying
@@ -50,7 +50,7 @@ const MultiChoice = ({question, updateAnswer}) =>{
         >
          {
             left.map((leftOption) => {
-              return <LeftOption key={leftOption.id} {...leftOption} handleDragStart={handleDragStart}/>
+              return <DraggableOption key={leftOption.id} {...leftOption} handleDragStart={handleDragStart}/>
             })
           }
         </div>   
@@ -65,7 +65,7 @@ const MultiChoice = ({question, updateAnswer}) =>{
               >
                 {
                   right[index] ? (
-                    <LeftOption key={right[index]?.id} id={right[index]?.id} text={right[index]?.text} handleDragStart={handleDragStart}/>
+                    <DraggableOption key={right[index]?.id} id={right[index]?.id} text={right[index]?.text} handleDragStart={handleDragStart}/>
                   ) : (
                     <div className="absolute insert-0 flex items-center justify-center text-gray-900 font-bold opacity-20">{rightOption.text}</div>
                   )
@@ -78,7 +78,7 @@ const MultiChoice = ({question, updateAnswer}) =>{
   );
 }
 
-const LeftOption = ({id, text, handleDragStart}) => {
+const DraggableOption = ({id, text, handleDragStart}) => {
   return (
     <motion.div draggable="true"
       layout
@@ -91,4 +91,4 @@ const LeftOption = ({id, text, handleDragStart}) => {
 };
 
 
-export default MultiChoice;
+export default MatchingQuestion;
