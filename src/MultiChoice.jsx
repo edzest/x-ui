@@ -1,11 +1,9 @@
 import React, {useState} from 'react';
 import { motion } from 'framer-motion';
 
-function MultiChoice() {
-  // TODO: handle if length of left and right are different
-
-  const [left, setLeft] = useState(DEFAULT_QUESTION.leftOptions);
-  const [rightOption] = useState(DEFAULT_QUESTION.rightOptions); // just for showing the option on the right side in background, is never modified by user
+const MultiChoice = ({question, updateAnswer}) =>{
+  const [left, setLeft] = useState(question.leftOptions);
+  const [rightOption] = useState(question.rightOptions); // just for showing the option on the right side in background, is never modified by user
   const [right, setRight] = useState(Array(left.size).fill(null)); // actually stores the data on the right side and keeps modifying
   const [currentActive, setCurrentActive] = useState(-1); // keeps track on which right droppable is the option dragged over currently
 
@@ -92,45 +90,5 @@ const LeftOption = ({id, text, handleDragStart}) => {
   );
 };
 
-const DEFAULT_QUESTION = {
-  "explanation": "Explanation 1",
-  "id": "11",
-  "leftOptions": [
-    {
-      "id": "1",
-      "text": "Karachi"
-    },
-    {
-      "id": "2",
-      "text": "Delhi"
-    },
-    {
-      "id": "3",
-      "text": "Kathmandu"
-    },
-    {
-      "id": "4",
-      "text": "Columbo"
-    }
-  ],
-  "rightOptions": [
-    {
-      "id": "5",
-      "text": "India"
-    },
-    {
-      "id": "6",
-      "text": "Sri-Lanka"
-    },
-    {
-      "id": "7",
-      "text": "Paxtan"
-    },
-    {
-      "id": "8",
-      "text": "Nepal"
-    }
-  ],
-}
 
 export default MultiChoice;
