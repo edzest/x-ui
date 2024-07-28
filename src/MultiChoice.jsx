@@ -52,7 +52,7 @@ function MultiChoice() {
         >
          {
             left.map((leftOption) => {
-              return <LeftOption key={leftOption.id} {...leftOption} isRight={false} handleDragStart={handleDragStart}/>
+              return <LeftOption key={leftOption.id} {...leftOption} handleDragStart={handleDragStart}/>
             })
           }
         </div>   
@@ -67,7 +67,7 @@ function MultiChoice() {
               >
                 {
                   right[index] ? (
-                    <LeftOption key={right[index]?.id} id={right[index]?.id} text={right[index]?.text} isRight={true} handleDragStart={handleDragStart}/>
+                    <LeftOption key={right[index]?.id} id={right[index]?.id} text={right[index]?.text} handleDragStart={handleDragStart}/>
                   ) : (
                     <div className="absolute insert-0 flex items-center justify-center text-gray-900 font-bold opacity-20">{rightOption.text}</div>
                   )
@@ -80,12 +80,12 @@ function MultiChoice() {
   );
 }
 
-const LeftOption = ({id, text, isRight, handleDragStart}) => {
+const LeftOption = ({id, text, handleDragStart}) => {
   return (
     <motion.div draggable="true"
       layout
       layoutId={id}
-      onDragStart={(e) => handleDragStart(e, {id, text, isRight})}
+      onDragStart={(e) => handleDragStart(e, {id, text})}
       className="cursor-grab rounded border border-neutral-700 p-3 active:cursor-grabbing mb-2 w-full">
       <p className="">{text}</p>
     </motion.div>
