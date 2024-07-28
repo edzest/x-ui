@@ -5,10 +5,9 @@ function MultiChoice() {
   // TODO: handle if length of left and right are different
 
   const [left, setLeft] = useState(DEFAULT_QUESTION.leftOptions);
-  const [rightOption, setRightOption] = useState(DEFAULT_QUESTION.rightOptions);
-  const [right, setRight] = useState(Array(left.size).fill(null));
-  const [currentActive, setCurrentActive] = useState(-1);
-  const [leftActive, setLeftActive] = useState(false);
+  const [rightOption] = useState(DEFAULT_QUESTION.rightOptions); // just for showing the option on the right side in background, is never modified by user
+  const [right, setRight] = useState(Array(left.size).fill(null)); // actually stores the data on the right side and keeps modifying
+  const [currentActive, setCurrentActive] = useState(-1); // keeps track on which right droppable is the option dragged over currently
 
   const handleDragStart = (e, option) => {
     e.dataTransfer.setData("optionDetail", JSON.stringify(option));
@@ -26,45 +25,30 @@ function MultiChoice() {
 
   const handleDragEnd = (e, index) => {
     if (right[index]) return;
-    setCurrentActive(-1);
     const optionDetail = JSON.parse(e.dataTransfer.getData("optionDetail"));
-    const newRight = [...right];
-    newRight[index] = optionDetail;
-    setRight(newRight);
-    setLeft((pv) => pv.filter((c) => c.id !== optionDetail.id));
-  }
-
-  const handleDragOverLeft = e => {
-    e.preventDefault();
-    setLeftActive(true);
-  }
-
-  const handleDragLeaveLeft = () => {
-    setLeftActive(false);
-  }
-
-  const handleDragEndLeft = (e) => {
-    const optionDetail = JSON.parse(e.dataTransfer.getData("optionDetail"));
-    if (optionDetail.isRight == false) {
-      setLeftActive(false);
-      return;
+    if (index === rightOption.length) {
+      setLeft((pv) => [...pv, optionDetail]);
+      const rightIndex = right.findIndex((c) => c?.id === optionDetail.id);
+      const newRight = [...right];
+      newRight[rightIndex] = null;
+      setRight(newRight);
+    } else {
+      const newRight = [...right];
+      newRight[index] = optionDetail;
+      setRight(newRight);
+      setLeft((pv) => pv.filter((c) => c.id !== optionDetail.id));
     }
-    setLeft((pv) => [...pv, optionDetail]);
-    const rightIndex = right.findIndex((c) => c?.id === optionDetail.id);
-    const newRight = [...right];
-    newRight[rightIndex] = null;
-    setRight(newRight);
-    setLeftActive(false);
+    setCurrentActive(-1);
   }
   
 
   return (
     <div className="flex">
       <div className="w-80 shrink-0">
-        <div className={`transition-colors w-full items-center justify-between h-full ${leftActive ? "border-orange-500 bg-yellow-300 text-orange-500" : "" }`}
-        onDragOver={(e) => handleDragOverLeft(e)}
-        onDragLeave={handleDragLeaveLeft}
-        onDrop={(e) => handleDragEndLeft(e)}
+        <div className={`transition-colors w-full items-center justify-between h-full ${currentActive === rightOption.length ? "border-orange-500 bg-yellow-300 text-orange-500" : "" }`}
+          onDragOver={(e) => handleDragOver(e, rightOption.length)}
+          onDragLeave={handleDragLeave}
+          onDrop={(e) => handleDragEnd(e, rightOption.length)}
         >
          {
             left.map((leftOption) => {
@@ -85,7 +69,7 @@ function MultiChoice() {
                   right[index] ? (
                     <LeftOption key={right[index]?.id} id={right[index]?.id} text={right[index]?.text} isRight={true} handleDragStart={handleDragStart}/>
                   ) : (
-                    <div className="absolute insert-0 flex items-center justify-center text-gray-900 font-bold opacity-20 ">{rightOption.text}</div>
+                    <div className="absolute insert-0 flex items-center justify-center text-gray-900 font-bold opacity-20">{rightOption.text}</div>
                   )
                 }
               </div>
