@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
 function MultiChoice() {
@@ -40,39 +40,55 @@ function MultiChoice() {
     }
     setCurrentActive(-1);
   }
-  
+
 
   return (
     <div className="flex">
       <div className="w-80 shrink-0">
-        <div className={`transition-colors w-full items-center justify-between h-full ${currentActive === rightOption.length ? "border-orange-500 bg-yellow-300 text-orange-500" : "" }`}
+        <div className={`transition-colors 
+                         w-full 
+                         items-center 
+                         justify-between 
+                         h-full 
+                         ${currentActive === rightOption.length ? "bg-primary-content" : ""}`}
           onDragOver={(e) => handleDragOver(e, rightOption.length)}
           onDragLeave={handleDragLeave}
           onDrop={(e) => handleDragEnd(e, rightOption.length)}
         >
-         {
+          {
             left.map((leftOption) => {
-              return <LeftOption key={leftOption.id} {...leftOption} handleDragStart={handleDragStart}/>
+              return <LeftOption key={leftOption.id} {...leftOption} handleDragStart={handleDragStart} />
             })
           }
-        </div>   
+        </div>
       </div>
-      <div className="ml-16 w-80 shrink-0 bg-neutral-300/50">
+      <div className="ml-16 w-80 shrink-0">
         {
           rightOption.map((rightOption, index) => {
-            return <div key={rightOption.id} className={`relative rounded w-full h-16  flex items-center justify-content border mb-2 p-3 ${currentActive === index ? "border-orange-500 bg-yellow-300 text-orange-500" : "bg-gray-200 border-gray-900"}`}
+            return <div key={rightOption.id}
+              className={`relative 
+                          rounded 
+                          w-full 
+                          h-16  
+                          flex 
+                          items-center 
+                          justify-content 
+                          border 
+                          mb-2 
+                          p-2 
+                          ${currentActive === index ? "border-primary bg-primary-content" : "bg-base-200"}`}
               onDragOver={(e) => handleDragOver(e, index)}
               onDragLeave={handleDragLeave}
               onDrop={(e) => handleDragEnd(e, index)}
-              >
-                {
-                  right[index] ? (
-                    <LeftOption key={right[index]?.id} id={right[index]?.id} text={right[index]?.text} handleDragStart={handleDragStart}/>
-                  ) : (
-                    <div className="absolute insert-0 flex items-center justify-center text-gray-900 font-bold opacity-20">{rightOption.text}</div>
-                  )
-                }
-              </div>
+            >
+              {
+                right[index] ? (
+                  <LeftOption key={right[index]?.id} id={right[index]?.id} text={right[index]?.text} handleDragStart={handleDragStart} />
+                ) : (
+                  <div className="absolute insert-0 flex items-center justify-center text-gray-900">{rightOption.text}</div>
+                )
+              }
+            </div>
           })
         }
       </div>
@@ -80,13 +96,13 @@ function MultiChoice() {
   );
 }
 
-const LeftOption = ({id, text, handleDragStart}) => {
+const LeftOption = ({ id, text, handleDragStart }) => {
   return (
     <motion.div draggable="true"
       layout
       layoutId={id}
-      onDragStart={(e) => handleDragStart(e, {id, text})}
-      className="cursor-grab rounded border border-neutral-700 p-3 active:cursor-grabbing mb-2 w-full">
+      onDragStart={(e) => handleDragStart(e, { id, text })}
+      className="cursor-grab rounded border border-neutral-700 p-3 active:cursor-grabbing w-full">
       <p className="">{text}</p>
     </motion.div>
   );
