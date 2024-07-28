@@ -1,6 +1,6 @@
 import Home from './home/Home';
 import Landing from './landing/Landing';
-import MatchingQuestion from './matching-question/MatchingQuestion';
+import MultiChoice from './MultiChoice';
 import Questionnaire from './questionnaire/questionnaire';
 import TestResult from './test-result/testResult';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
@@ -11,12 +11,12 @@ function App() {
     <div>
       <Router>
         <Routes>
-          <Route path="/" element={<Landing />} />
+          <Route path="/" element={<Landing />} /> 
           {/* home can be moved to landing page later */}
           <Route path="/home" element={<Home />} />
           <Route path="/test/:id" element={<Questionnaire/>} />
           <Route path="/result" element={<TestResult />} />
-          <Route path="/matching" element={<MatchingQuestion />} />
+          <Route path="/matching" element={<MultiChoice />} />
         </Routes>
       </Router>
 
