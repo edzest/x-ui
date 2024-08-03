@@ -61,12 +61,12 @@ function Questionnaire() {
 
     const handleNext = () => {
         console.log(answers)
-        setCurrentIndex((currentIndex + 1) % questions.size);
+        setCurrentIndex((currentIndex + 1) % (questions.size + matchingQuestions.size));
     };
 
     const handlePrevious = () => {
         console.log(answers)
-        setCurrentIndex((currentIndex - 1 + questions.size) % questions.size);
+        setCurrentIndex((currentIndex - 1 + (questions.size + matchingQuestions.size)) % (questions.size + matchingQuestions.size));
     };
 
     const handleClear = () => {
@@ -108,7 +108,7 @@ function Questionnaire() {
         });
     }
 
-    if (!questions.size) return <div>Loading...</div>;
+    if (!questions.size && !matchingQuestions.size) return <div>Loading...</div>;
 
     return (
         <div className='container px-4 mx-auto prose sm:block'>
@@ -148,8 +148,8 @@ function Questionnaire() {
             <div className='grid-cols-3 grid gap-4 mb-10 md:flex md:justify-between'>
                 <button onClick={handlePrevious} disabled={currentIndex === 0} className='btn md:flex-inital'>Previous</button>
                 <button onClick={handleClear} className='btn btn-ghost'>Clear</button>
-                {currentIndex < questions.size - 1 && <button onClick={handleNext} disabled={currentIndex === questions.size - 1} className='btn btn-primary md:flex-initial'>Next</button>}
-                {currentIndex === questions.size - 1 && <button onClick={handleSubmit} className='btn btn-primary md:flex-initial'>Submit</button>}
+                {currentIndex < (questions.size + matchingQuestions.size) - 1 && <button onClick={handleNext} disabled={currentIndex === (questions.size + matchingQuestions.size) - 1} className='btn btn-primary md:flex-initial'>Next</button>}
+                {currentIndex === (questions.size + matchingQuestions.size) - 1 && <button onClick={handleSubmit} className='btn btn-primary md:flex-initial'>Submit</button>}
             </div>
 
             {/* exit modal */}
