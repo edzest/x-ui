@@ -15,16 +15,38 @@ function Questionnaire() {
     // temporarily evaluating test on UI until we host BE somewhere
     const evaluateTest = (answers) => {
         var score = 0;
-        for (const [qId, aId] of Object.entries(answers)) {
-            const q = TEST[0].questions.find(q => q.id === qId)
-            if (q.correctOptionId === aId) {
-                score++;
+        for (const [questionId, answer] of Object.entries(answers)) {
+            if (questions.has(parseInt(questionId))) {
+                if (questions.get(parseInt(questionId)).correctOptionId === answer) {
+                    score++;
+                }
+                
+                // setting selected answers
+                let a = ASNWER_SHEET.find(a => a.question.id === questionId);
+                a.selectedAnswerId = answer;
+                console.log("setting aId = ", answer, " to qId = ", questionId);   
+            } else {
+                const q = matchingQuestions.get(parseInt(questionId));
+                const correctAnswer = q.answers;
+                if (correctAnswer.length !== answer.length) {
+                    // if matchingQuestions left size is not matching answer size, then continue;
+                    return;
+                } else {
+                    let wrong = false;
+                    for (let i = 0; i < answer.length; i++) {
+                        const answerMapping = correctAnswer.find(a => a.leftId === answer[i].leftId);
+                        if (answerMapping.rightId !== answer[i].rightId) {
+                            wrong = true;
+                            break;
+                        }
+                    }
+                    if (!wrong) {
+                        score++;
+                    }
+                    
+                }
+                
             }
-
-            // setting selected answers
-            let a = ASNWER_SHEET.find(a => a.question.id === qId);
-            a.selectedAnswerId = aId;
-            console.log("setting aId = ", aId, " to qId = ", qId);
         }
         console.log("you scored " + score )
         return score;
