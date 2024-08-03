@@ -26,8 +26,11 @@ const MatchingQuestion = ({question, updateAnswer}) =>{
   }
 
   const handleDragEnd = (e, index) => {
-    if (right[index]) return;
     const optionDetail = JSON.parse(e.dataTransfer.getData("optionDetail"));
+    if (optionDetail.source === index || right[index]) {
+      setCurrentActive(-1);
+      return;
+    }
     if (index === rightOption.length) {
       // dragging to left
       setLeft((pv) => [...pv, optionDetail]);
@@ -36,11 +39,17 @@ const MatchingQuestion = ({question, updateAnswer}) =>{
       newRight[rightIndex] = null;
       setRight(newRight);
     } else {
-      // dragging to right
-      const newRight = [...right];
-      newRight[index] = optionDetail;
-      setRight(newRight);
-      setLeft((pv) => pv.filter((c) => c.id !== optionDetail.id));
+      if (optionDetail.source < rightOption.length && optionDetail.source < rightOption.length) {
+        const newRight = [...right];
+        newRight[optionDetail.source] = null;
+        newRight[index] = optionDetail; 
+        setRight(newRight);
+      } else {
+        const newRight = [...right];
+        newRight[index] = optionDetail;
+        setRight(newRight);
+        setLeft((pv) => pv.filter((c) => c.id !== optionDetail.id));
+      } 
     }
     setCurrentActive(-1);
   }
@@ -68,7 +77,7 @@ const MatchingQuestion = ({question, updateAnswer}) =>{
         >
          {
             left.map((leftOption) => {
-              return <DraggableOption key={leftOption.id} {...leftOption} handleDragStart={handleDragStart}/>
+              return <DraggableOption key={leftOption.id} {...leftOption} source={rightOption.length} handleDragStart={handleDragStart}/>
             })
           }
         </div>   
@@ -83,7 +92,7 @@ const MatchingQuestion = ({question, updateAnswer}) =>{
               >
                 {
                   right[index] ? (
-                    <DraggableOption key={right[index]?.id} id={right[index]?.id} text={right[index]?.text} handleDragStart={handleDragStart}/>
+                    <DraggableOption key={right[index]?.id} id={right[index]?.id} source={index} text={right[index]?.text} handleDragStart={handleDragStart}/>
                   ) : (
                     <div className="absolute insert-0 flex items-center justify-center text-gray-900 font-bold opacity-20">{rightOption.text}</div>
                   )
@@ -96,12 +105,12 @@ const MatchingQuestion = ({question, updateAnswer}) =>{
   );
 }
 
-const DraggableOption = ({id, text, handleDragStart}) => {
+const DraggableOption = ({id, text, source, handleDragStart}) => {
   return (
     <motion.div draggable="true"
       layout
       layoutId={id}
-      onDragStart={(e) => handleDragStart(e, {id, text})}
+      onDragStart={(e) => handleDragStart(e, {id, source, text})}
       className="cursor-grab rounded border border-neutral-700 p-3 active:cursor-grabbing mb-2 w-full">
       <p className="">{text}</p>
     </motion.div>
