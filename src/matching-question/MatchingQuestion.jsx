@@ -9,6 +9,7 @@ const MatchingQuestion = ({question, updateAnswer}) =>{
 
   useEffect(() => {
     updateNewAnswer();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [right, left]);
 
   const handleDragStart = (e, option) => {
@@ -28,11 +29,12 @@ const MatchingQuestion = ({question, updateAnswer}) =>{
   const handleDragEnd = (e, index) => {
     const optionDetail = JSON.parse(e.dataTransfer.getData("optionDetail"));
     if (optionDetail.source === index || right[index]) {
+      // if there's already a value at the droppable or if option has same source and destination, do nothing and return
       setCurrentActive(-1);
       return;
     }
     if (index === rightOption.length) {
-      // dragging to left
+      // dragging from right to left
       setLeft((pv) => [...pv, optionDetail]);
       const rightIndex = right.findIndex((c) => c?.id === optionDetail.id);
       const newRight = [...right];
@@ -40,11 +42,13 @@ const MatchingQuestion = ({question, updateAnswer}) =>{
       setRight(newRight);
     } else {
       if (optionDetail.source < rightOption.length && optionDetail.source < rightOption.length) {
+        // when moving from right to right side, just update right values
         const newRight = [...right];
         newRight[optionDetail.source] = null;
         newRight[index] = optionDetail; 
         setRight(newRight);
       } else {
+        // when moved from left to right
         const newRight = [...right];
         newRight[index] = optionDetail;
         setRight(newRight);
