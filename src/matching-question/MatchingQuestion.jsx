@@ -1,11 +1,15 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { motion } from 'framer-motion';
 
 const MatchingQuestion = ({question, updateAnswer}) =>{
   const [left, setLeft] = useState(question.leftOptions);
   const [rightOption] = useState(question.rightOptions); // just for showing the option on the right side in background, is never modified by user
-  const [right, setRight] = useState(Array(left.size).fill(null)); // actually stores the data on the right side and keeps modifying
+  const [right, setRight] = useState(Array(left.length).fill(null)); // actually stores the data on the right side and keeps modifying
   const [currentActive, setCurrentActive] = useState(-1); // keeps track on which right droppable is the option dragged over currently
+
+  useEffect(() => {
+    updateNewAnswer();
+  }, [right, left]);
 
   const handleDragStart = (e, option) => {
     e.dataTransfer.setData("optionDetail", JSON.stringify(option));
@@ -39,18 +43,18 @@ const MatchingQuestion = ({question, updateAnswer}) =>{
       setLeft((pv) => pv.filter((c) => c.id !== optionDetail.id));
     }
     setCurrentActive(-1);
-    updateNewAnswer();
   }
 
   const updateNewAnswer = () => {
     const answers = [];
     right.forEach((option, index) => {
       if (option === null) return;
-      answers.add({
-        leftId: rightOption[index].id,
-        rightId: option.id
+      answers.push({
+        leftId: option.id,
+        rightId: rightOption[index].id
       });
     });
+    console.log(answers);
     updateAnswer(answers);
   }
   
