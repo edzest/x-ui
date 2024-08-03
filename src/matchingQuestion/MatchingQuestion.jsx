@@ -25,18 +25,33 @@ const MatchingQuestion = ({question, updateAnswer}) =>{
     if (right[index]) return;
     const optionDetail = JSON.parse(e.dataTransfer.getData("optionDetail"));
     if (index === rightOption.length) {
+      // dragging to left
       setLeft((pv) => [...pv, optionDetail]);
       const rightIndex = right.findIndex((c) => c?.id === optionDetail.id);
       const newRight = [...right];
       newRight[rightIndex] = null;
       setRight(newRight);
     } else {
+      // dragging to right
       const newRight = [...right];
       newRight[index] = optionDetail;
       setRight(newRight);
       setLeft((pv) => pv.filter((c) => c.id !== optionDetail.id));
     }
     setCurrentActive(-1);
+    updateNewAnswer();
+  }
+
+  const updateNewAnswer = () => {
+    const answers = [];
+    right.forEach((option, index) => {
+      if (option === null) return;
+      answers.add({
+        leftId: rightOption[index].id,
+        rightId: option.id
+      });
+    });
+    updateAnswer(answers);
   }
   
 

@@ -38,30 +38,6 @@ export const TEST = [
         "text": "The agile team is in the project planning phase. The stakeholders have provided high-level requirements for a new software product. What should the product owner do next?"
       },
       {
-        "correctOptionId": "3",
-        "explanation": "sample explanation text",
-        "id": "2",
-        "options": [
-          {
-            "id": "1",
-            "text": "Start coding and development"
-          },
-          {
-            "id": "2",
-            "text": "Assign tasks to individual team members"
-          },
-          {
-            "id": "3",
-            "text": "Estimate the effort required for each user story"
-          },
-          {
-            "id": "4",
-            "text": "Seek clarification on the user story from the product owner"
-          }
-        ],
-        "text": "The agile team is in the sprint planning meeting. The product owner presents a set of user stories from the product backlog. What should the team do next?"
-      },
-      {
         "correctOptionId": "2",
         "explanation": "sample explanation text",
         "id": "3",
@@ -256,8 +232,9 @@ export const TEST = [
     ],
     "matchingQuestions": [
       {
+        "text": "Can you identify correct capitals of these countries?",
         "explanation": "Explanation 1",
-        "id": "11",
+        "id": "2",
         "answers": [
           {
             "leftId": "1",

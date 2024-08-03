@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { TEST } from '../constants/constants';
 import { FiX } from "react-icons/fi";
+import MatchingQuestion from '../matchingQuestion/MatchingQuestion';
 
 function Questionnaire() {
     const [questions, setQuestions] = useState([]);
@@ -11,39 +12,31 @@ function Questionnaire() {
     const navigate = useNavigate();
     const { id } = useParams();
 
-    // temporarily evaluating test on UI until we host BE somewhere
-    const evaluateTest = (answers) => {
-        var score = 0;
-        for (const [qId, aId] of Object.entries(answers)) {
-            const q = TEST[0].questions.find(q => q.id === qId)
-            if (q.correctOptionId === aId) {
-                score++;
-            }
-        }
-        console.log("you scored " + score )
-        return score;
-    };
-
     useEffect(() => {
         new Promise((resolve, reject) => {
             resolve(TEST[0]);
         })
             .then(data => {
-                setQuestions(data['questions']);
-                setMatchingQuestions(data['matchingQuestions']);
-                // sort the question in a hashmap and show accordingly
+                setQuestions(createMap(data['questions']));
+                setMatchingQuestions(createMap(data['matchingQuestions']));
             })
             .catch(error => console.error(error));
     }, [id]);
 
+    const createMap = (questions) => {
+        const questionIdMap = {};
+        questions.map(q => questionIdMap[q.id] = q);
+        return questionIdMap;
+    }
+
     const handleNext = () => {
         console.log(answers)
-        setCurrentIndex((currentIndex + 1) % questions.length);
+        setCurrentIndex((currentIndex + 1) % (questions.length + matchingQuestions.length));
     };
 
     const handlePrevious = () => {
         console.log(answers)
-        setCurrentIndex((currentIndex - 1 + questions.length) % questions.length);
+        setCurrentIndex((currentIndex - 1 + questions.length + matchingQuestions.length) % (questions.length + matchingQuestions.length));
     };
 
     const handleClear = () => {
@@ -59,6 +52,13 @@ function Questionnaire() {
             [currentIndex + 1]: event.target.value
         });
     };
+
+    const handleMatchingQuestionChange = (matchingQuestionAnswer) => {
+        setAnswers({
+            ...answers,
+            [currentIndex + 1]: matchingQuestionAnswer
+        });
+    }
 
     const handleSubmit = () => {
         console.log(answers);
@@ -78,7 +78,21 @@ function Questionnaire() {
             .catch(error => console.error(error));
     };
 
-    if (!questions.length) return <div>Loading...</div>;
+    // temporarily evaluating test on UI until we host BE somewhere
+    const evaluateTest = (answers) => {
+        var score = 0;
+        for (const [qId, aId] of Object.entries(answers)) {
+            const q = TEST[0].questions.find(q => q.id === qId)
+            if (q.correctOptionId === aId) {
+                score++;
+            }
+        }
+        console.log("you scored " + score )
+        return score;
+    };
+
+
+    if (Object.keys(questions).length === 0 || Object.keys(matchingQuestions).length) return <div>Loading...</div>;
 
     return (
         <div className='container px-4 mx-auto prose flex flex-col min-h-screen sm:block'>
@@ -87,21 +101,35 @@ function Questionnaire() {
                     onClick={() => document.getElementById('my_modal_1').showModal()}><FiX /></button>
             </div>
             <hr className='mt-0' />
-            <h4>{`Q ${currentIndex + 1}: ${questions[currentIndex].text}`}</h4>
-            <div className='my-6'>
-                {questions[currentIndex].options.map((option, index) => (
-                    <div key={index}>
-                        <label className='flex my-3'>
-                            <input type="radio"
-                                className='radio radio-primary mr-3'
-                                value={option.id}
-                                checked={answers[currentIndex + 1] === option.id}
-                                onChange={handleOptionChange} />
-                            {option.text}
-                        </label>
+
+            {console.log(questions)}
+            {
+                questions[currentIndex] ? (
+                    <>
+                    <h4>{`Q ${currentIndex + 1}: ${questions[currentIndex].text}`}</h4>
+                    <div className='my-6'>
+                        {questions[currentIndex].options.map((option, index) => (
+                            <div key={index}>
+                                <label className='flex my-3'>
+                                    <input type="radio"
+                                        className='radio radio-primary mr-3'
+                                        value={option.id}
+                                        checked={answers[currentIndex + 1] === option.id}
+                                        onChange={handleOptionChange} />
+                                    {option.text}
+                                </label>
+                            </div>
+                        ))}
                     </div>
-                ))}
-            </div>
+                    </>
+                ) : (
+                    <>
+                    <MatchingQuestion question={matchingQuestions[currentIndex]} updateAnswer={handleMatchingQuestionChange} />
+                    </>
+                )
+            }
+            
+
             <div className='grid-cols-3 grid gap-4 mt-auto mb-10 md:flex md:justify-between'>
                 <button onClick={handlePrevious} disabled={currentIndex === 0} className='btn md:flex-inital'>Previous</button>
                 <button onClick={handleClear} className='btn btn-ghost'>Clear</button>
