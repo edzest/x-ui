@@ -242,7 +242,15 @@ export const TEST = [
           },
           {
             "leftId": "2",
+            "rightId": "1"
+          },
+          {
+            "leftId": "3",
             "rightId": "4"
+          },
+          {
+            "leftId": "4",
+            "rightId": "2"
           }
         ],
         "leftOptions": [
