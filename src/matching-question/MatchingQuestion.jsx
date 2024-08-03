@@ -17,7 +17,7 @@ const MatchingQuestion = ({question, updateAnswer}) =>{
 
   const handleDragOver = (e, index) => {
     e.preventDefault();
-    if (right[index]) return;
+    if (right[index]) return; // if already an element, don't allow to drop
     setCurrentActive(index);
   };
 
@@ -54,7 +54,6 @@ const MatchingQuestion = ({question, updateAnswer}) =>{
         rightId: rightOption[index].id
       });
     });
-    console.log(answers);
     updateAnswer(answers);
   }
   
