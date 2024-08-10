@@ -9,7 +9,7 @@ const MatchingQuestion = ({ question, updateAnswer }) => {
 
   useEffect(() => {
     updateNewAnswer();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [right, left]);
 
   const handleDragStart = (e, option) => {
@@ -99,7 +99,7 @@ const MatchingQuestion = ({ question, updateAnswer }) => {
       <div className="flex-1 ml-1 p-2">
         {
           rightOptions.map((rightOption, index) => {
-            return <div key={rightOption.id} className={`rounded border shadow-inner w-full mb-3 border ${currentActive === index ? "border-primary border-dashed bg-primary-content text-secondary" : ""}`}
+            return <div key={rightOption.id} className={`rounded border shadow-inner w-full mb-3 border ${currentActive === index ? "border-primary border-dashed bg-primary-content text-secondaryn" : ""}`}
               onDragOver={(e) => handleDragOver(e, index)}
               onDragLeave={handleDragLeave}
               onDrop={(e) => handleDragEnd(e, index)}
@@ -120,27 +120,17 @@ const MatchingQuestion = ({ question, updateAnswer }) => {
   );
 }
 
-// const DraggableOption = ({ id, text, source, handleDragStart }) => {
-//   return (
-//     <motion.div draggable="true"
-//       layout
-//       layoutId={id}
-//       onDragStart={(e) => handleDragStart(e, { id, source, text })}
-//       className="cursor-grab rounded border border-neutral-700 active:cursor-grabbing pl-1 w-full">
-//       <div className="">{text}</div>
-//     </motion.div>
-//   );
-// };
-
 const DraggableOption = ({ id, text, source, handleDragStart }) => {
   return (
-    <div
-      className='bg-base-100 shadow cursor-grab p-3 mb-3 border w-full'
+    <motion.div
+      layout
+      layoutId={id}
       draggable="true"
-      onDragStart={(e) => handleDragStart(e, { id, source, text })}
-    >
-      {text}
-    </div>
+      onDragStart={(e) => handleDragStart(e, { id, source, text })}>
+      <div className='bg-base-100 shadow cursor-grab p-3 mb-3 border w-full'>
+        {text}
+      </div>
+    </motion.div>
   );
 };
 
