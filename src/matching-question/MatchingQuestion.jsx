@@ -1,28 +1,33 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
-const MatchingQuestion = ({question, updateAnswer}) =>{
+const MatchingQuestion = ({ question, updateAnswer }) => {
   const [left, setLeft] = useState(question.leftOptions);
-  const [rightOption] = useState(question.rightOptions); // just for showing the option on the right side in background, is never modified by user
+  const [rightOptions] = useState(question.rightOptions); // just for showing the option on the right side in background, is never modified by user
   const [right, setRight] = useState(Array(left.length).fill(null)); // actually stores the data on the right side and keeps modifying
   const [currentActive, setCurrentActive] = useState(-1); // keeps track on which right droppable is the option dragged over currently
 
   useEffect(() => {
     updateNewAnswer();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [right, left]);
 
   const handleDragStart = (e, option) => {
+    console.log(JSON.stringify(option))
     e.dataTransfer.setData("optionDetail", JSON.stringify(option));
   };
 
   const handleDragOver = (e, index) => {
     e.preventDefault();
-    if (right[index]) return; // if already an element, don't allow to drop
+    if (right[index] != null) { // if already an element, don't allow to drop
+      return;
+    }
+    console.log("currentActive: ", index)
     setCurrentActive(index);
   };
 
   const handleDragLeave = (e) => {
+    console.log("currentActive: ", -1)
     setCurrentActive(-1);
   }
 
@@ -30,10 +35,11 @@ const MatchingQuestion = ({question, updateAnswer}) =>{
     const optionDetail = JSON.parse(e.dataTransfer.getData("optionDetail"));
     if (optionDetail.source === index || right[index]) {
       // if there's already a value at the droppable or if option has same source and destination, do nothing and return
+      console.log("currentActive: ", -1)
       setCurrentActive(-1);
       return;
     }
-    if (index === rightOption.length) {
+    if (index === rightOptions.length) {
       // dragging from right to left
       setLeft((pv) => [...pv, optionDetail]);
       const rightIndex = right.findIndex((c) => c?.id === optionDetail.id);
@@ -41,11 +47,11 @@ const MatchingQuestion = ({question, updateAnswer}) =>{
       newRight[rightIndex] = null;
       setRight(newRight);
     } else {
-      if (optionDetail.source < rightOption.length && optionDetail.source < rightOption.length) {
+      if (optionDetail.source < rightOptions.length && optionDetail.source < rightOptions.length) {
         // when moving from right to right side, just update right values
         const newRight = [...right];
         newRight[optionDetail.source] = null;
-        newRight[index] = optionDetail; 
+        newRight[index] = optionDetail;
         setRight(newRight);
       } else {
         // when moved from left to right
@@ -53,8 +59,9 @@ const MatchingQuestion = ({question, updateAnswer}) =>{
         newRight[index] = optionDetail;
         setRight(newRight);
         setLeft((pv) => pv.filter((c) => c.id !== optionDetail.id));
-      } 
+      }
     }
+    console.log("currentActive: ", -1)
     setCurrentActive(-1);
   }
 
@@ -64,44 +71,48 @@ const MatchingQuestion = ({question, updateAnswer}) =>{
       if (option === null) return;
       answers.push({
         leftId: option.id,
-        rightId: rightOption[index].id
+        rightId: rightOptions[index].id
       });
     });
     updateAnswer(answers);
   }
-  
+
 
   return (
-    <div className="flex">
-      <div className="w-80 shrink-0">
-        <div className={`transition-colors w-full items-center justify-between h-full ${currentActive === rightOption.length ? "border-orange-500 bg-yellow-300 text-orange-500" : "" }`}
-          onDragOver={(e) => handleDragOver(e, rightOption.length)}
-          onDragLeave={handleDragLeave}
-          onDrop={(e) => handleDragEnd(e, rightOption.length)}
-        >
-         {
+    <div className="flex my-6">
+      <div className={`flex-1 mr-1 p-2 ${currentActive === rightOptions.length ? "border border-primary border-dashed bg-primary-content text-primary" : ""}`}
+        onDragOver={(e) => handleDragOver(e, rightOptions.length)}
+        onDragLeave={handleDragLeave}
+        onDrop={(e) => handleDragEnd(e, rightOptions.length)}>
+        <div className={`items-center justify-between`}>
+          {
             left.map((leftOption) => {
-              return <DraggableOption key={leftOption.id} {...leftOption} source={rightOption.length} handleDragStart={handleDragStart}/>
+              return <DraggableOption
+                key={leftOption.id}
+                {...leftOption}
+                source={rightOptions.length}
+                handleDragStart={handleDragStart} />
             })
           }
-        </div>   
+        </div>
       </div>
-      <div className="ml-16 w-80 shrink-0 bg-neutral-300/50">
+      <div className="flex-1 ml-1 p-2">
         {
-          rightOption.map((rightOption, index) => {
-            return <div key={rightOption.id} className={`relative rounded w-full h-16  flex items-center justify-content border mb-2 p-3 ${currentActive === index ? "border-orange-500 bg-yellow-300 text-orange-500" : "bg-gray-200 border-gray-900"}`}
+          rightOptions.map((rightOption, index) => {
+            return <div key={rightOption.id} className={`rounded border shadow-inner w-full mb-3 border ${currentActive === index ? "border-primary border-dashed bg-primary-content text-secondary" : ""}`}
               onDragOver={(e) => handleDragOver(e, index)}
               onDragLeave={handleDragLeave}
               onDrop={(e) => handleDragEnd(e, index)}
-              >
-                {
-                  right[index] ? (
-                    <DraggableOption key={right[index]?.id} id={right[index]?.id} source={index} text={right[index]?.text} handleDragStart={handleDragStart}/>
-                  ) : (
-                    <div className="absolute insert-0 flex items-center justify-center text-gray-900 font-bold opacity-20">{rightOption.text}</div>
-                  )
-                }
-              </div>
+            >
+              {
+                right[index] ? (
+                  <DraggableOption key={right[index]?.id} id={right[index]?.id} source={index} text={right[index]?.text} handleDragStart={handleDragStart} />
+                ) : (
+                  // <div className="absolute insert-0 flex justify-center">{rightOption.text}</div>
+                  <div className='p-3 bg-base-200'>{rightOption.text}</div>
+                )
+              }
+            </div>
           })
         }
       </div>
@@ -109,15 +120,27 @@ const MatchingQuestion = ({question, updateAnswer}) =>{
   );
 }
 
-const DraggableOption = ({id, text, source, handleDragStart}) => {
+// const DraggableOption = ({ id, text, source, handleDragStart }) => {
+//   return (
+//     <motion.div draggable="true"
+//       layout
+//       layoutId={id}
+//       onDragStart={(e) => handleDragStart(e, { id, source, text })}
+//       className="cursor-grab rounded border border-neutral-700 active:cursor-grabbing pl-1 w-full">
+//       <div className="">{text}</div>
+//     </motion.div>
+//   );
+// };
+
+const DraggableOption = ({ id, text, source, handleDragStart }) => {
   return (
-    <motion.div draggable="true"
-      layout
-      layoutId={id}
-      onDragStart={(e) => handleDragStart(e, {id, source, text})}
-      className="cursor-grab rounded border border-neutral-700 p-3 active:cursor-grabbing mb-2 w-full">
-      <p className="">{text}</p>
-    </motion.div>
+    <div
+      className='bg-base-100 shadow cursor-grab p-3 mb-3 border w-full'
+      draggable="true"
+      onDragStart={(e) => handleDragStart(e, { id, source, text })}
+    >
+      {text}
+    </div>
   );
 };
 
