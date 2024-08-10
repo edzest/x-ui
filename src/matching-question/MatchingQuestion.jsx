@@ -84,7 +84,7 @@ const MatchingQuestion = ({ question, updateAnswer }) => {
         onDragOver={(e) => handleDragOver(e, rightOptions.length)}
         onDragLeave={handleDragLeave}
         onDrop={(e) => handleDragEnd(e, rightOptions.length)}>
-        <div className={`items-center justify-between`}>
+        <div className='grid grid-cols-1 gap-3'>
           {
             left.map((leftOption) => {
               return <DraggableOption
@@ -97,24 +97,26 @@ const MatchingQuestion = ({ question, updateAnswer }) => {
         </div>
       </div>
       <div className="flex-1 ml-1 p-2">
-        {
-          rightOptions.map((rightOption, index) => {
-            return <div key={rightOption.id} className={`rounded border shadow-inner w-full mb-3 border ${currentActive === index ? "border-primary border-dashed bg-primary-content text-secondaryn" : ""}`}
-              onDragOver={(e) => handleDragOver(e, index)}
-              onDragLeave={handleDragLeave}
-              onDrop={(e) => handleDragEnd(e, index)}
-            >
-              {
-                right[index] ? (
-                  <DraggableOption key={right[index]?.id} id={right[index]?.id} source={index} text={right[index]?.text} handleDragStart={handleDragStart} />
-                ) : (
-                  // <div className="absolute insert-0 flex justify-center">{rightOption.text}</div>
-                  <div className='p-3 bg-base-200'>{rightOption.text}</div>
-                )
-              }
-            </div>
-          })
-        }
+        <div className='grid grid-cols-1 gap-3'>
+          {
+            rightOptions.map((rightOption, index) => {
+              return <div key={rightOption.id} className={`rounded border shadow-inner w-full border ${currentActive === index ? "border-primary border-dashed bg-primary-content text-secondaryn" : ""}`}
+                onDragOver={(e) => handleDragOver(e, index)}
+                onDragLeave={handleDragLeave}
+                onDrop={(e) => handleDragEnd(e, index)}
+              >
+                {
+                  right[index] ? (
+                    <DraggableOption key={right[index]?.id} id={right[index]?.id} source={index} text={right[index]?.text} handleDragStart={handleDragStart} />
+                  ) : (
+                    // <div className="absolute insert-0 flex justify-center">{rightOption.text}</div>
+                    <div className='p-3 bg-base-200'>{rightOption.text}</div>
+                  )
+                }
+              </div>
+            })
+          }
+        </div>
       </div>
     </div>
   );
@@ -127,7 +129,7 @@ const DraggableOption = ({ id, text, source, handleDragStart }) => {
       layoutId={id}
       draggable="true"
       onDragStart={(e) => handleDragStart(e, { id, source, text })}>
-      <div className='bg-base-100 shadow cursor-grab p-3 mb-3 border w-full'>
+      <div className='bg-base-100 shadow cursor-grab p-3 border w-full'>
         {text}
       </div>
     </motion.div>
