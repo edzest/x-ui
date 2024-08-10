@@ -3,6 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { TEST, ASNWER_SHEET } from '../constants/constants';
 import { FiX } from "react-icons/fi";
 import MatchingQuestion from '../matching-question/MatchingQuestion';
+import SingleSelectQuestion from '../single-select-question/SingleSelectQuestion';
+import MultiSelectQuestion from '../multi-select-question/MultiSelectQuestion';
 
 function Questionnaire() {
     const [questions, setQuestions] = useState(new Map());
@@ -20,11 +22,11 @@ function Questionnaire() {
                 if (questions.get(parseInt(questionId)).correctOptionId === answer) {
                     score++;
                 }
-                
+
                 // setting selected answers
                 let a = ASNWER_SHEET.find(a => a.question.id === questionId);
                 a.selectedAnswerId = answer;
-                console.log("setting aId = ", answer, " to qId = ", questionId);   
+                console.log("setting aId = ", answer, " to qId = ", questionId);
             } else {
                 const q = matchingQuestions.get(parseInt(questionId));
                 const correctAnswer = q.answers;
@@ -43,12 +45,12 @@ function Questionnaire() {
                     if (!wrong) {
                         score++;
                     }
-                    
+
                 }
-                
+
             }
         }
-        console.log("you scored " + score )
+        console.log("you scored " + score)
         return score;
     };
 
@@ -68,7 +70,7 @@ function Questionnaire() {
                     map.set(parseInt(question.id), question);
                     return map;
                 }, new Map());
-                
+
                 const matchingQuestionsMap = data['matchingQuestions'].reduce((map, matchingQuestion) => {
                     map.set(parseInt(matchingQuestion.id), matchingQuestion);
                     return map;
@@ -98,12 +100,12 @@ function Questionnaire() {
         });
     }
 
-    const handleOptionChange = (event) => {
-        setAnswers({
-            ...answers,
-            [currentIndex + 1]: event.target.value
-        });
-    };
+    // const handleOptionChange = (event) => {
+    //     setAnswers({
+    //         ...answers,
+    //         [currentIndex + 1]: event.target.value
+    //     });
+    // };
 
     const handleSubmit = () => {
         console.log(answers);
@@ -123,7 +125,7 @@ function Questionnaire() {
             .catch(error => console.error(error));
     };
 
-	const handleMatchingQuestionChange = (matchingQuestionAnswer) => {
+    const handleMatchingQuestionChange = (matchingQuestionAnswer) => {
         setAnswers({
             ...answers,
             [currentIndex + 1]: matchingQuestionAnswer
@@ -132,6 +134,44 @@ function Questionnaire() {
 
     if (!questions.size && !matchingQuestions.size) return <div>Loading...</div>;
 
+    const handleAnswerChange = (selectedAnswerId) => {
+        console.log("in handleAnswerChange, selectedAnswerId = ", selectedAnswerId)
+        setAnswers({
+            ...answers,
+            [currentIndex + 1]: selectedAnswerId
+        })
+    }
+
+    const renderQuestion = (questionNumber, question, selectedAnswer) => {
+        switch (question.questionType) {
+            case 'single-select':
+                return (
+                    <SingleSelectQuestion questionNumber={questionNumber}
+                        question={question}
+                        selectedAnswerId={selectedAnswer}
+                        onAnswerChange={handleAnswerChange} />
+                )
+            case 'multi-select':
+                return (
+                    <MultiSelectQuestion
+                        questionNumber={questionNumber}
+                        question={question}
+                        selectedAnswerIds={selectedAnswer}
+                        onAnswerChange={handleAnswerChange} />
+                )
+            case 'matching-question':
+                return (
+                    <MatchingQuestion
+                        questionNumber={questionNumber}
+                        question={question}
+                        selectedAnswers={selectedAnswer}
+                        onAnswerChange={handleAnswerChange} />
+                )
+            default:
+                return <div></div>;
+        }
+    }
+
     return (
         <div className='container px-4 mx-auto prose sm:block'>
             <div className='text-right'>
@@ -139,10 +179,11 @@ function Questionnaire() {
                     onClick={() => document.getElementById('my_modal_1').showModal()}><FiX /></button>
             </div>
             <hr className='mt-0' />
-            {
-                questions.has(currentIndex + 1) ? (
-                <>
-                <h4>{`Q ${currentIndex + 1}: ${questions.get(currentIndex + 1).text}`}</h4>
+            {/* based on question type display the appropriate component */}
+            {/* { */}
+            {/* // questions.has(currentIndex + 1) ? ( */}
+
+            {/* <h4>{`Q ${currentIndex + 1}: ${questions.get(currentIndex + 1).text}`}</h4>
                 <div className='my-6'>
                     {questions.get(currentIndex + 1).options.map((option, index) => (
                         <div key={index}>
@@ -165,13 +206,27 @@ function Questionnaire() {
                     <MatchingQuestion question={matchingQuestions.get(currentIndex + 1)} answer={answers[currentIndex + 1]} updateAnswer={handleMatchingQuestionChange} />
                     </>
                 )
+                    : (
+                        <>
+                            <h4>{`Q ${currentIndex + 1}: ${matchingQuestions.get(currentIndex + 1).text}`}</h4>
+                            <MatchingQuestion question={matchingQuestions.get(currentIndex + 1)} updateAnswer={handleMatchingQuestionChange} />
+                        </>
+                    ) */}
+            {/* } */}
+
+            {
+                renderQuestion(currentIndex + 1,
+                    questions.get(currentIndex + 1),
+                    answers[currentIndex + 1]
+                )
             }
-            
+
+
             <div className='grid-cols-3 grid gap-4 mb-10 md:flex md:justify-between'>
                 <button onClick={handlePrevious} disabled={currentIndex === 0} className='btn md:flex-inital'>Previous</button>
                 <button onClick={handleClear} className='btn btn-ghost'>Clear</button>
-                {currentIndex < (questions.size + matchingQuestions.size) - 1 && <button onClick={handleNext} disabled={currentIndex === (questions.size + matchingQuestions.size) - 1} className='btn btn-primary md:flex-initial'>Next</button>}
-                {currentIndex === (questions.size + matchingQuestions.size) - 1 && <button onClick={handleSubmit} className='btn btn-primary md:flex-initial'>Submit</button>}
+                {currentIndex < (questions.size) - 1 && <button onClick={handleNext} disabled={currentIndex === (questions.size) - 1} className='btn btn-primary md:flex-initial'>Next</button>}
+                {currentIndex === (questions.size) - 1 && <button onClick={handleSubmit} className='btn btn-primary md:flex-initial'>Submit</button>}
             </div>
 
             {/* exit modal */}
