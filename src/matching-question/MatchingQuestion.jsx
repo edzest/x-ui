@@ -35,6 +35,7 @@ const MatchingQuestion = ({ question, answer, updateAnswer }) => {
   }, [right, left]);
 
   const handleDragStart = (e, option) => {
+    console.log(JSON.stringify(option))
     e.dataTransfer.setData("optionDetail", JSON.stringify(option));
   };
 
@@ -43,10 +44,12 @@ const MatchingQuestion = ({ question, answer, updateAnswer }) => {
     if (right[index] != null) { // if already an element, don't allow to drop
       return;
     }
+    console.log("currentActive: ", index)
     setCurrentActive(index);
   };
 
   const handleDragLeave = (e) => {
+    console.log("currentActive: ", -1)
     setCurrentActive(-1);
   }
 
@@ -54,6 +57,7 @@ const MatchingQuestion = ({ question, answer, updateAnswer }) => {
     const optionDetail = JSON.parse(e.dataTransfer.getData("optionDetail"));
     if (optionDetail.source === index || right[index]) {
       // if there's already a value at the droppable or if option has same source and destination, do nothing and return
+      console.log("currentActive: ", -1)
       setCurrentActive(-1);
       return;
     }
@@ -79,6 +83,7 @@ const MatchingQuestion = ({ question, answer, updateAnswer }) => {
         setLeft((pv) => pv.filter((c) => c.id !== optionDetail.id));
       }
     }
+    console.log("currentActive: ", -1)
     setCurrentActive(-1);
   }
 
