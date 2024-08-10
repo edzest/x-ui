@@ -1,34 +1,34 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
-const MatchingQuestion = ({ question, answer, updateAnswer }) => {
-  const chooseLeft = (leftOptions, answer) => {
-    if (answer?.length > 0) {
-      // return only elements in left leftQuestion which does not exist in answer[i].letIndex
-      return leftOptions.filter((option) => !answer.find((a) => a.leftId === option.id));
+const MatchingQuestion = ({ questionNumber, question, selectedAnswer, onAnswerChange }) => {
+  const initializeLeft = (leftOptions, selectedAnswer) => {
+    if (selectedAnswer?.length > 0) {
+      // return only elements in left leftQuestion which does not exist in selectedAnswer[i].letIndex
+      return leftOptions.filter((option) => !selectedAnswer.find((a) => a.leftId === option.id));
     } else {
       return leftOptions;
     }
   }
 
-  const chooseRight = (leftOptions, rightOptions, answer) => {
+  const initializeRight = (leftOptions, rightOptions, selectedAnswer) => {
     const rightValue = Array(leftOptions.length).fill(null);
-    if (answer?.length > 0) {
-      answer.forEach(answer => {
-        const rightIndex = rightOptions.findIndex((a) => a.id === answer.rightId);
-        const leftOption = leftOptions.find((a) => a.id === answer.leftId);
+    if (selectedAnswer?.length > 0) {
+      selectedAnswer.forEach(selectedAnswer => {
+        const rightIndex = rightOptions.findIndex((a) => a.id === selectedAnswer.rightId);
+        const leftOption = leftOptions.find((a) => a.id === selectedAnswer.leftId);
         rightValue[rightIndex] = leftOption;
       });
     }
     return rightValue;
   }
 
-  const [left, setLeft] = useState(chooseLeft(question.leftOptions, answer));
+  const [left, setLeft] = useState(initializeLeft(question.leftOptions, selectedAnswer));
   const [rightOptions] = useState(question.rightOptions); // just for showing the option on the right side in background, is never modified by user
-  const [right, setRight] = useState(chooseRight(question.leftOptions,question.rightOptions, answer)); // actually stores the data on the right side and keeps modifying
+  const [right, setRight] = useState(initializeRight(question.leftOptions, question.rightOptions, selectedAnswer)); // actually stores the data on the right side and keeps modifying
   const [currentActive, setCurrentActive] = useState(-1); // keeps track on which right droppable is the option dragged over currently
 
-  
+
 
   useEffect(() => {
     updateNewAnswer();
@@ -96,47 +96,51 @@ const MatchingQuestion = ({ question, answer, updateAnswer }) => {
         rightId: rightOptions[index].id
       });
     });
-    updateAnswer(answers);
+    onAnswerChange(answers);
   }
 
   return (
-    <div className="flex my-6">
-      <div className={`flex-1 mr-1 p-2 ${currentActive === rightOptions.length ? "border border-primary border-dashed bg-primary-content text-primary" : ""}`}
-        onDragOver={(e) => handleDragOver(e, rightOptions.length)}
-        onDragLeave={handleDragLeave}
-        onDrop={(e) => handleDragEnd(e, rightOptions.length)}>
-        <div className='grid grid-cols-1 gap-3'>
-          {
-            left.map((leftOption) => {
-              return <DraggableOption
-                key={leftOption.id}
-                {...leftOption}
-                source={rightOptions.length}
-                handleDragStart={handleDragStart} />
-            })
-          }
+    <div>
+      <h4>{`Q ${questionNumber}: ${question.text}`}</h4>
+
+      <div className="flex my-6">
+        <div className={`flex-1 mr-1 p-2 ${currentActive === rightOptions.length ? "border border-primary border-dashed bg-primary-content text-primary" : ""}`}
+          onDragOver={(e) => handleDragOver(e, rightOptions.length)}
+          onDragLeave={handleDragLeave}
+          onDrop={(e) => handleDragEnd(e, rightOptions.length)}>
+          <div className='grid grid-cols-1 gap-3'>
+            {
+              left.map((leftOption) => {
+                return <DraggableOption
+                  key={leftOption.id}
+                  {...leftOption}
+                  source={rightOptions.length}
+                  handleDragStart={handleDragStart} />
+              })
+            }
+          </div>
         </div>
-      </div>
-      <div className="flex-1 ml-1 p-2">
-        <div className='grid grid-cols-1 gap-3'>
-          {
-            rightOptions.map((rightOption, index) => {
-              return <div key={rightOption.id} className={`rounded border shadow-inner w-full border ${currentActive === index ? "border-primary border-dashed bg-primary-content text-secondaryn" : ""}`}
-                onDragOver={(e) => handleDragOver(e, index)}
-                onDragLeave={handleDragLeave}
-                onDrop={(e) => handleDragEnd(e, index)}
-              >
-                {
-                  right[index] ? (
-                    <DraggableOption key={right[index]?.id} id={right[index]?.id} source={index} text={right[index]?.text} handleDragStart={handleDragStart} />
-                  ) : (
-                    // <div className="absolute insert-0 flex justify-center">{rightOption.text}</div>
-                    <div className='p-3 bg-base-200'>{rightOption.text}</div>
-                  )
-                }
-              </div>
-            })
-          }
+        <div className="flex-1 ml-1 p-2">
+          <div className='grid grid-cols-1 gap-3'>
+            {
+              rightOptions.map((rightOption, index) => {
+                return <div key={rightOption.id} className={`rounded border shadow-inner w-full border ${currentActive === index ? "border-primary border-dashed bg-primary-content text-secondaryn" : ""}`}
+                  onDragOver={(e) => handleDragOver(e, index)}
+                  onDragLeave={handleDragLeave}
+                  onDrop={(e) => handleDragEnd(e, index)}
+                >
+                  {
+                    right[index] ? (
+                      <DraggableOption key={right[index]?.id} id={right[index]?.id} source={index} text={right[index]?.text} handleDragStart={handleDragStart} />
+                    ) : (
+                      // <div className="absolute insert-0 flex justify-center">{rightOption.text}</div>
+                      <div className='p-3 bg-base-200'>{rightOption.text}</div>
+                    )
+                  }
+                </div>
+              })
+            }
+          </div>
         </div>
       </div>
     </div>
