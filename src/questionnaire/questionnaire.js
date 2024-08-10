@@ -126,6 +126,7 @@ function Questionnaire() {
     };
 
     const handleMatchingQuestionChange = (matchingQuestionAnswer) => {
+        console.log("in handleMatchingQuestionChange, matchingQuestionAnswer = ", matchingQuestionAnswer)
         setAnswers({
             ...answers,
             [currentIndex + 1]: matchingQuestionAnswer
@@ -165,7 +166,7 @@ function Questionnaire() {
                         questionNumber={questionNumber}
                         question={question}
                         selectedAnswers={selectedAnswer}
-                        onAnswerChange={handleAnswerChange} />
+                        onAnswerChange={handleMatchingQuestionChange} />
                 )
             default:
                 return <div></div>;
