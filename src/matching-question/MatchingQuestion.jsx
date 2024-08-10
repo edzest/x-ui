@@ -1,19 +1,40 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
-const MatchingQuestion = ({ question, updateAnswer }) => {
-  const [left, setLeft] = useState(question.leftOptions);
+const MatchingQuestion = ({ question, answer, updateAnswer }) => {
+  const chooseLeft = (leftOptions, answer) => {
+    if (answer?.length > 0) {
+      // return only elements in left leftQuestion which does not exist in answer[i].letIndex
+      return leftOptions.filter((option) => !answer.find((a) => a.leftId === option.id));
+    } else {
+      return leftOptions;
+    }
+  }
+
+  const chooseRight = (leftOptions, rightOptions, answer) => {
+    const rightValue = Array(leftOptions.length).fill(null);
+    if (answer?.length > 0) {
+      answer.forEach(answer => {
+        const rightIndex = rightOptions.findIndex((a) => a.id === answer.rightId);
+        const leftOption = leftOptions.find((a) => a.id === answer.leftId);
+        rightValue[rightIndex] = leftOption;
+      });
+    }
+    return rightValue;
+  }
+
+  const [left, setLeft] = useState(chooseLeft(question.leftOptions, answer));
   const [rightOptions] = useState(question.rightOptions); // just for showing the option on the right side in background, is never modified by user
-  const [right, setRight] = useState(Array(left.length).fill(null)); // actually stores the data on the right side and keeps modifying
+  const [right, setRight] = useState(chooseRight(question.leftOptions,question.rightOptions, answer)); // actually stores the data on the right side and keeps modifying
   const [currentActive, setCurrentActive] = useState(-1); // keeps track on which right droppable is the option dragged over currently
+
+  
 
   useEffect(() => {
     updateNewAnswer();
-
   }, [right, left]);
 
   const handleDragStart = (e, option) => {
-    console.log(JSON.stringify(option))
     e.dataTransfer.setData("optionDetail", JSON.stringify(option));
   };
 
@@ -22,12 +43,10 @@ const MatchingQuestion = ({ question, updateAnswer }) => {
     if (right[index] != null) { // if already an element, don't allow to drop
       return;
     }
-    console.log("currentActive: ", index)
     setCurrentActive(index);
   };
 
   const handleDragLeave = (e) => {
-    console.log("currentActive: ", -1)
     setCurrentActive(-1);
   }
 
@@ -35,7 +54,6 @@ const MatchingQuestion = ({ question, updateAnswer }) => {
     const optionDetail = JSON.parse(e.dataTransfer.getData("optionDetail"));
     if (optionDetail.source === index || right[index]) {
       // if there's already a value at the droppable or if option has same source and destination, do nothing and return
-      console.log("currentActive: ", -1)
       setCurrentActive(-1);
       return;
     }
@@ -61,7 +79,6 @@ const MatchingQuestion = ({ question, updateAnswer }) => {
         setLeft((pv) => pv.filter((c) => c.id !== optionDetail.id));
       }
     }
-    console.log("currentActive: ", -1)
     setCurrentActive(-1);
   }
 
@@ -76,7 +93,6 @@ const MatchingQuestion = ({ question, updateAnswer }) => {
     });
     updateAnswer(answers);
   }
-
 
   return (
     <div className="flex my-6">

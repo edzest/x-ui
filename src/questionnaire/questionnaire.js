@@ -162,7 +162,7 @@ function Questionnaire() {
                 : (
                     <>
                     <h4>{`Q ${currentIndex + 1}: ${matchingQuestions.get(currentIndex + 1).text}`}</h4>
-                    <MatchingQuestion question={matchingQuestions.get(currentIndex + 1)} updateAnswer={handleMatchingQuestionChange} />
+                    <MatchingQuestion question={matchingQuestions.get(currentIndex + 1)} answer={answers[currentIndex + 1]} updateAnswer={handleMatchingQuestionChange} />
                     </>
                 )
             }
