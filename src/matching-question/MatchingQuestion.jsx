@@ -164,8 +164,6 @@ const DraggableOption = ({ id, text, dropAreaIdx, handleDragStart }) => {
       onDragStart={(e) => handleDragStart(e, option)}>
       <div className='bg-base-100 shadow cursor-grab p-3 border w-full'>
         {text}
-        <br />
-        <p className='text-sm text-gray-500'>id={id}, dropAreaIdx={dropAreaIdx}</p>
       </div>
     </motion.div>
   );
@@ -177,8 +175,7 @@ const RightAnswerArea = ({ id, text, dropAreaIdx, handleDragOver, handleOnDropRi
       className='border p-3 bg-base-200 shadow-inner'
       onDragOver={(e) => handleDragOver(e)}
       onDrop={(e) => handleOnDropRight(e, dropAreaIdx)}>
-      {text}<br />
-      <p className='text-sm text-gray-500'>id={id}, dropAreaIdx={dropAreaIdx}</p>
+      {text}
     </div>
   )
 }

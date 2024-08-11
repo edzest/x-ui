@@ -107,10 +107,10 @@ export const TEST = [
         "text": "The agile team has completed a sprint and is conducting a sprint review. What is the main objective of the sprint review?"
       },
       {
-        "correctOptionId": "2",
+        "correctOptionIds": ["2", "3"],
         "explanation": "sample explanation text",
         "id": "4",
-        "questionType": "single-select",
+        "questionType": "multi-select",
         "options": [
           {
             "id": "1",
