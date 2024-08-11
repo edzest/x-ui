@@ -141,27 +141,25 @@ const MatchingQuestion = ({ questionNumber, question, selectedAnswer = {}, onAns
     }
   }));
 
+  function* alternateIterator(leftItems, rightItems) {
+    const maxLength = Math.max(leftItems.length, rightItems.length);
+  
+    for (let i = 0; i < maxLength; i++) {
+      if (i < leftItems.length) {
+        yield leftItems[i];
+      }
+      if (i < rightItems.length) {
+        yield rightItems[i];
+      }
+    }
+  }
+
   return (
     <div>
       <h4>{`Q ${questionNumber}: ${question.text}`}</h4>
 
-      <div className="flex my-6">
-        <div className="flex-1 mr-1 p-2">
-          {/* // onDragOver={(e) => handleDragOver(e)}
-          // onDrop={e => handleOnDropLeft(e)}> */}
-          <div className='grid grid-cols-1 gap-3'>
-            {
-              leftItems.map(i => i)
-            }
-          </div>
-        </div>
-        <div className="flex-1 ml-1 p-2">
-          <div className='grid grid-cols-1 gap-3'>
-            {
-              rightItems.map(i => i)
-            }
-          </div>
-        </div>
+      <div className="grid grid-cols-2 gap-4 my-6 auto-rows-fr grid-cols-[1fr_3fr]">
+        {[...alternateIterator(leftItems, rightItems)]}
       </div>
     </div>
   );
@@ -175,7 +173,7 @@ const DraggableOption = ({ id, text, dropAreaIdx, handleDragStart }) => {
       layoutId={id}
       draggable="true"
       onDragStart={(e) => handleDragStart(e, option)}>
-      <div className='bg-base-100 shadow cursor-grab p-3 border w-full'>
+      <div className='bg-base-100 shadow cursor-grab p-3 border w-full h-full'>
         {id}: {text}
       </div>
     </motion.div>

@@ -65,7 +65,7 @@ export const TEST = [
         "rightOptions": [
           {
             "id": "1",
-            "text": "India"
+            "text": "The w-auto utility can be useful if you need to remove an element’s assigned width under a specific condition, like at a particular breakpoint:"
           },
           {
             "id": "2",
