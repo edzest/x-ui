@@ -100,13 +100,6 @@ function Questionnaire() {
         });
     }
 
-    // const handleOptionChange = (event) => {
-    //     setAnswers({
-    //         ...answers,
-    //         [currentIndex + 1]: event.target.value
-    //     });
-    // };
-
     const handleSubmit = () => {
         console.log(answers);
         new Promise((resolve, reject) => {
@@ -174,47 +167,13 @@ function Questionnaire() {
     }
 
     return (
-        <div className='container px-4 mx-auto prose sm:block'>
+        <div className='container px-4 mx-auto not-prose max-w-screen-lg sm:block'>
             <div className='text-right'>
                 <button className='btn btn-ghost btn-circle text-3xl font-light m-4'
                     onClick={() => document.getElementById('my_modal_1').showModal()}><FiX /></button>
             </div>
             <hr className='mt-0' />
-            {/* based on question type display the appropriate component */}
-            {/* { */}
-            {/* // questions.has(currentIndex + 1) ? ( */}
-
-            {/* <h4>{`Q ${currentIndex + 1}: ${questions.get(currentIndex + 1).text}`}</h4>
-                <div className='my-6'>
-                    {questions.get(currentIndex + 1).options.map((option, index) => (
-                        <div key={index}>
-                            <label className='flex my-3'>
-                                <input type="radio"
-                                    className='radio radio-primary mr-3'
-                                    value={option.id}
-                                    checked={answers[currentIndex + 1] === option.id}
-                                    onChange={handleOptionChange} />
-                                {option.text}
-                            </label>
-                        </div>
-                    ))}
-                </div>
-                </>
-                )
-                : (
-                    <>
-                    <h4>{`Q ${currentIndex + 1}: ${matchingQuestions.get(currentIndex + 1).text}`}</h4>
-                    <MatchingQuestion question={matchingQuestions.get(currentIndex + 1)} answer={answers[currentIndex + 1]} updateAnswer={handleMatchingQuestionChange} />
-                    </>
-                )
-                    : (
-                        <>
-                            <h4>{`Q ${currentIndex + 1}: ${matchingQuestions.get(currentIndex + 1).text}`}</h4>
-                            <MatchingQuestion question={matchingQuestions.get(currentIndex + 1)} updateAnswer={handleMatchingQuestionChange} />
-                        </>
-                    ) */}
-            {/* } */}
-
+            <br />
             {
                 renderQuestion(currentIndex + 1,
                     questions.get(currentIndex + 1),

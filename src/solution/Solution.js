@@ -41,7 +41,7 @@ function Solution() {
             <div className='container mx-auto'>
                 <Nav />
             </div>
-            <div className='container px-4 mx-auto prose'>
+            <div className='container px-4 mx-auto not-prose max-w-screen-lg'>
 
                 <div>
                     <div className='text-right'>
