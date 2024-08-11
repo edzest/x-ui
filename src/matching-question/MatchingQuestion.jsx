@@ -21,12 +21,13 @@ const MatchingQuestion = ({ questionNumber, question, selectedAnswer = {}, onAns
       // dropped from left to right
       setLeftItems(prevLeftItems => {
         return prevLeftItems.toSpliced(
-          from, 1, <EmptyDropArea key={crypto.randomUUID()}
+          from, 1, <EmptyDropArea key={`left-${from}`}
             dropAreaIdx={from}
             handleDragOver={handleDragOver}
             handleOnDropEmpty={handleOnDropEmpty} />)
       })
-      setRightItems(prevRightItems => prevRightItems.toSpliced(to % question.leftOptions.length, 1, <DraggableOption key={crypto.randomUUID()}
+      setRightItems(prevRightItems => prevRightItems.toSpliced(to % question.leftOptions.length, 1, <DraggableOption
+        key={`right-${to}`}
         id={droppedItem.id}
         text={droppedItem.text}
         dropAreaIdx={to}
@@ -38,14 +39,15 @@ const MatchingQuestion = ({ questionNumber, question, selectedAnswer = {}, onAns
       setRightItems(prevRightItems => {
         return prevRightItems
           .toSpliced(from % question.leftOptions.length, 1, <RightAnswerArea
-            key={crypto.randomUUID()}
+            key={`right-${from}`}
             id={correspondingRightOption.id}
             text={correspondingRightOption.text}
             dropAreaIdx={from}
             handleDragOver={handleDragOver}
             handleOnDropRight={handleOnDropRight}
           />)
-          .toSpliced(to % question.leftOptions.length, 1, <DraggableOption key={crypto.randomUUID()}
+          .toSpliced(to % question.leftOptions.length, 1, <DraggableOption
+            key={`right-${to}`}
             id={droppedItem.id}
             text={droppedItem.text}
             dropAreaIdx={to}
@@ -65,21 +67,24 @@ const MatchingQuestion = ({ questionNumber, question, selectedAnswer = {}, onAns
       // up-down in left side - no change in answer
       setLeftItems(prevLeftItems => {
         return prevLeftItems.toSpliced(
-          from, 1, <EmptyDropArea key={crypto.randomUUID()}
-            dropAreaIdx={from}
-            handleDragOver={handleDragOver}
-            handleOnDropEmpty={handleOnDropEmpty} />
-        ).toSpliced(to, 1, <DraggableOption key={crypto.randomUUID()}
+          from, 1, <EmptyDropArea
+          key={`left-${from}`}
+          dropAreaIdx={from}
+          handleDragOver={handleDragOver}
+          handleOnDropEmpty={handleOnDropEmpty} />
+        ).toSpliced(to, 1, <DraggableOption
+          key={`left-${to}`}
           id={droppedItem.id}
           text={droppedItem.text}
-          dropAreaIdx={dropAreaIdx}
+          dropAreaIdx={to}
           handleDragStart={handleDragStart} />)
       })
     } else {
       // dragged from right to left
       setLeftItems(prevLeftItems => {
         return prevLeftItems.toSpliced(to, 1,
-          <DraggableOption key={crypto.randomUUID()}
+          <DraggableOption
+            key={`left-${to}`}
             id={droppedItem.id}
             text={droppedItem.text}
             dropAreaIdx={to}
@@ -89,7 +94,7 @@ const MatchingQuestion = ({ questionNumber, question, selectedAnswer = {}, onAns
         const correspondingRightOption = question.rightOptions[from % question.leftOptions.length]
         return prevRightItems.toSpliced(from % question.leftOptions.length, 1,
           <RightAnswerArea
-            key={crypto.randomUUID()}
+            key={`right-${from}`}
             id={correspondingRightOption.id}
             text={correspondingRightOption.text}
             dropAreaIdx={from}
@@ -104,10 +109,10 @@ const MatchingQuestion = ({ questionNumber, question, selectedAnswer = {}, onAns
 
   const [leftItems, setLeftItems] = useState(question.leftOptions.map((option, index) => {
     if (option.id in selectedAnswer) {
-      return <EmptyDropArea key={crypto.randomUUID()} dropAreaIdx={index} handleDragOver={handleDragOver} handleOnDropEmpty={handleOnDropEmpty} />
+      return <EmptyDropArea key={`left-${index}`} dropAreaIdx={index} handleDragOver={handleDragOver} handleOnDropEmpty={handleOnDropEmpty} />
     } else {
       return <DraggableOption
-        key={crypto.randomUUID()}
+        key={`left-${index}`}
         id={option.id}
         text={option.text}
         dropAreaIdx={index}
@@ -121,13 +126,13 @@ const MatchingQuestion = ({ questionNumber, question, selectedAnswer = {}, onAns
     if (leftId !== undefined) {
       const leftOption = question.leftOptions.find(o => o.id === leftId)
       return <DraggableOption id={leftOption.id}
-        key={crypto.randomUUID()}
+        key={`right-${question.leftOptions.length + index}`}
         text={leftOption.text}
         dropAreaIdx={question.leftOptions.length + index}
         handleDragStart={handleDragStart} />
     } else {
       return <RightAnswerArea
-        key={crypto.randomUUID()}
+        key={`right-${question.leftOptions.length + index}`}
         id={option.id}
         text={option.text}
         dropAreaIdx={question.leftOptions.length + index}
