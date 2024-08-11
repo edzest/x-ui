@@ -1,144 +1,151 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
-const MatchingQuestion = ({ questionNumber, question, selectedAnswer, onAnswerChange }) => {
-  const initializeLeft = (leftOptions, selectedAnswer) => {
-    if (selectedAnswer?.length > 0) {
-      // return only elements in left leftQuestion which does not exist in selectedAnswer[i].letIndex
-      return leftOptions.filter((option) => !selectedAnswer.find((a) => a.leftId === option.id));
-    } else {
-      return leftOptions;
-    }
-  }
+const MatchingQuestion = ({ questionNumber, question, selectedAnswer = {}, onAnswerChange}) => {
 
-  const initializeRight = (leftOptions, rightOptions, selectedAnswer) => {
-    const rightValue = Array(leftOptions.length).fill(null);
-    if (selectedAnswer?.length > 0) {
-      selectedAnswer.forEach(selectedAnswer => {
-        const rightIndex = rightOptions.findIndex((a) => a.id === selectedAnswer.rightId);
-        const leftOption = leftOptions.find((a) => a.id === selectedAnswer.leftId);
-        rightValue[rightIndex] = leftOption;
-      });
-    }
-    return rightValue;
-  }
-
-  const [left, setLeft] = useState(initializeLeft(question.leftOptions, selectedAnswer));
-  const [rightOptions] = useState(question.rightOptions); // just for showing the option on the right side in background, is never modified by user
-  const [right, setRight] = useState(initializeRight(question.leftOptions, question.rightOptions, selectedAnswer)); // actually stores the data on the right side and keeps modifying
-  const [currentActive, setCurrentActive] = useState(-1); // keeps track on which right droppable is the option dragged over currently
-
-
-
-  useEffect(() => {
-    updateNewAnswer();
-  }, [right, left]);
-
-  const handleDragStart = (e, option) => {
-    console.log(JSON.stringify(option))
-    e.dataTransfer.setData("optionDetail", JSON.stringify(option));
+  // set item to dataTransfer object, item contains id, text and dragAreaIdx
+  const handleDragStart = (e, item) => {
+    e.dataTransfer.setData("application/json", JSON.stringify(item));
   };
 
-  const handleDragOver = (e, index) => {
+  const handleDragOver = (e) => {
     e.preventDefault();
-    if (right[index] != null) { // if already an element, don't allow to drop
-      return;
-    }
-    console.log("currentActive: ", index)
-    setCurrentActive(index);
   };
 
-  const handleDragLeave = (e) => {
-    console.log("currentActive: ", -1)
-    setCurrentActive(-1);
-  }
-
-  const handleDragEnd = (e, index) => {
-    const optionDetail = JSON.parse(e.dataTransfer.getData("optionDetail"));
-    if (optionDetail.source === index || right[index]) {
-      // if there's already a value at the droppable or if option has same source and destination, do nothing and return
-      console.log("currentActive: ", -1)
-      setCurrentActive(-1);
-      return;
-    }
-    if (index === rightOptions.length) {
-      // dragging from right to left
-      setLeft((pv) => [...pv, optionDetail]);
-      const rightIndex = right.findIndex((c) => c?.id === optionDetail.id);
-      const newRight = [...right];
-      newRight[rightIndex] = null;
-      setRight(newRight);
-    } else {
-      if (optionDetail.source < rightOptions.length && optionDetail.source < rightOptions.length) {
-        // when moving from right to right side, just update right values
-        const newRight = [...right];
-        newRight[optionDetail.source] = null;
-        newRight[index] = optionDetail;
-        setRight(newRight);
-      } else {
-        // when moved from left to right
-        const newRight = [...right];
-        newRight[index] = optionDetail;
-        setRight(newRight);
-        setLeft((pv) => pv.filter((c) => c.id !== optionDetail.id));
-      }
-    }
-    console.log("currentActive: ", -1)
-    setCurrentActive(-1);
-  }
-
-  const updateNewAnswer = () => {
-    const answers = [];
-    right.forEach((option, index) => {
-      if (option === null) return;
-      answers.push({
-        leftId: option.id,
-        rightId: rightOptions[index].id
+  const handleOnDropLeft = (e) => {
+    const droppedItem = JSON.parse(e.dataTransfer.getData("application/json"));
+    console.log(`dropped in left side, ${JSON.stringify(droppedItem)}`)
+    if (!leftItems.some(i => i.props.id === droppedItem.id)) {
+      // dragged from right and dropped in left
+      setLeftItems(prevLeftItems => {
+        return [
+          ...prevLeftItems,
+          <DraggableOption key={crypto.randomUUID()}
+            id={droppedItem.id}
+            text={droppedItem.text}
+            dropAreaIdx={question.leftOptions.length}
+            handleDragStart={handleDragStart} />
+        ]
+      })
+      setRightItems(prevRightItems => {
+        return prevRightItems.map(item => {
+          // Find the corresponding item on the right and replace it with RightAnswerArea
+          if (item.props.id === droppedItem.id) {
+            console.log("item props id ", item.props.id)
+            console.log("droppedItem", JSON.stringify(droppedItem))
+            const correspondingRightOption = question.rightOptions[droppedItem.dropAreaIdx]
+            console.log(JSON.stringify(correspondingRightOption))
+            return (
+              <RightAnswerArea
+                key={crypto.randomUUID()}
+                id={correspondingRightOption.id}
+                text={correspondingRightOption.text}
+                dropAreaIdx={item.props.dropAreaIdx}
+                handleDragOver={handleDragOver}
+                handleOnDropRight={handleOnDropRight}
+              />
+            );
+          }
+          return item;
+        });
       });
-    });
-    onAnswerChange(answers);
+      delete selectedAnswer[droppedItem.id];
+      console.log("selectedAnswer ", selectedAnswer)
+      onAnswerChange(selectedAnswer)
+    }
   }
+
+  const handleOnDropRight = (e, dropAreaIdx) => {
+    const droppedItem = JSON.parse(e.dataTransfer.getData("application/json"));
+    console.log(`dropped in right side dropIdx=${dropAreaIdx} item=${JSON.stringify(droppedItem)}`)
+    if (droppedItem.dropAreaIdx === question.leftOptions.length) {
+      // dropped from left to right
+      setLeftItems(prevLeftItems => {
+        const leftPos = prevLeftItems.findIndex(item => item.props.id === droppedItem.id)
+        console.log("left pos ", leftPos)
+        return prevLeftItems.toSpliced(leftPos, 1)
+      })
+      setRightItems(prevRightItems => prevRightItems.toSpliced(dropAreaIdx, 1, <DraggableOption key={crypto.randomUUID()}
+        id={droppedItem.id}
+        text={droppedItem.text}
+        dropAreaIdx={dropAreaIdx}
+        handleDragStart={handleDragStart} />
+      ))
+    } else {
+      // moved up & down
+      const from = droppedItem.dropAreaIdx
+      const to = dropAreaIdx
+      const correspondingRightOption = question.rightOptions[from]
+      setRightItems(prevRightItems => {
+        prevRightItems
+          .toSpliced(from, 1, <DraggableOption key={crypto.randomUUID()}
+            id={droppedItem.id}
+            text={droppedItem.text}
+            dropAreaIdx={dropAreaIdx}
+            handleDragStart={handleDragStart} />)
+          .toSpliced(to, 1, <RightAnswerArea
+            key={crypto.randomUUID()}
+            id={correspondingRightOption.id}
+            text={correspondingRightOption.text}
+            dropAreaIdx={dropAreaIdx}
+            handleDragOver={handleDragOver}
+            handleOnDropRight={handleOnDropRight}
+          />)
+      })
+    }
+    selectedAnswer[droppedItem.id] = question.rightOptions[dropAreaIdx]?.id;
+    console.log("selectedAnswer ", selectedAnswer)
+    onAnswerChange(selectedAnswer)
+  }
+
+  const [leftItems, setLeftItems] = useState(question.leftOptions.filter(option => !(option.id in selectedAnswer)).map(option => {
+    return <DraggableOption
+      key={crypto.randomUUID()}
+      id={option.id}
+      text={option.text}
+      dropAreaIdx={question.leftOptions.length}
+      handleDragStart={handleDragStart}
+    />
+  }));
+
+  const [rightItems, setRightItems] = useState(question.rightOptions.map((option, index) => {
+    let leftId = Object.entries(selectedAnswer).find(([key, val]) => val === option.id)?.[0]
+    if (leftId !== undefined) {
+      const leftOption = question.leftOptions.find(o => o.id === leftId)
+      return <DraggableOption id={leftOption.id}
+        key={crypto.randomUUID()}
+        text={leftOption.text}
+        dropAreaIdx={index}
+        handleDragStart={handleDragStart} />
+    } else {
+      return <RightAnswerArea
+        key={crypto.randomUUID()}
+        id={option.id}
+        text={option.text}
+        dropAreaIdx={index}
+        handleDragOver={handleDragOver}
+        handleOnDropRight={handleOnDropRight} />
+    }
+  }));
 
   return (
     <div>
       <h4>{`Q ${questionNumber}: ${question.text}`}</h4>
 
       <div className="flex my-6">
-        <div className={`flex-1 mr-1 p-2 ${currentActive === rightOptions.length ? "border border-primary border-dashed bg-primary-content text-primary" : ""}`}
-          onDragOver={(e) => handleDragOver(e, rightOptions.length)}
-          onDragLeave={handleDragLeave}
-          onDrop={(e) => handleDragEnd(e, rightOptions.length)}>
+        <div className="flex-1 mr-1 p-2"
+          onDragOver={(e) => handleDragOver(e)}
+          onDrop={e => handleOnDropLeft(e)}>
           <div className='grid grid-cols-1 gap-3'>
             {
-              left.map((leftOption) => {
-                return <DraggableOption
-                  key={leftOption.id}
-                  {...leftOption}
-                  source={rightOptions.length}
-                  handleDragStart={handleDragStart} />
-              })
+              leftItems.map(i => i)
             }
           </div>
         </div>
         <div className="flex-1 ml-1 p-2">
           <div className='grid grid-cols-1 gap-3'>
             {
-              rightOptions.map((rightOption, index) => {
-                return <div key={rightOption.id} className={`rounded border shadow-inner w-full border ${currentActive === index ? "border-primary border-dashed bg-primary-content text-secondaryn" : ""}`}
-                  onDragOver={(e) => handleDragOver(e, index)}
-                  onDragLeave={handleDragLeave}
-                  onDrop={(e) => handleDragEnd(e, index)}
-                >
-                  {
-                    right[index] ? (
-                      <DraggableOption key={right[index]?.id} id={right[index]?.id} source={index} text={right[index]?.text} handleDragStart={handleDragStart} />
-                    ) : (
-                      // <div className="absolute insert-0 flex justify-center">{rightOption.text}</div>
-                      <div className='p-3 bg-base-200'>{rightOption.text}</div>
-                    )
-                  }
-                </div>
-              })
+              rightItems.map(i => i)
             }
           </div>
         </div>
@@ -147,19 +154,33 @@ const MatchingQuestion = ({ questionNumber, question, selectedAnswer, onAnswerCh
   );
 }
 
-const DraggableOption = ({ id, text, source, handleDragStart }) => {
+const DraggableOption = ({ id, text, dropAreaIdx, handleDragStart }) => {
+  const option = { id: id, text: text, dropAreaIdx: dropAreaIdx }
   return (
     <motion.div
       layout
       layoutId={id}
       draggable="true"
-      onDragStart={(e) => handleDragStart(e, { id, source, text })}>
+      onDragStart={(e) => handleDragStart(e, option)}>
       <div className='bg-base-100 shadow cursor-grab p-3 border w-full'>
         {text}
+        <br />
+        <p className='text-sm text-gray-500'>id={id}, dropAreaIdx={dropAreaIdx}</p>
       </div>
     </motion.div>
   );
 };
 
+const RightAnswerArea = ({ id, text, dropAreaIdx, handleDragOver, handleOnDropRight }) => {
+  return (
+    <div
+      className='border p-3 bg-base-200 shadow-inner'
+      onDragOver={(e) => handleDragOver(e)}
+      onDrop={(e) => handleOnDropRight(e, dropAreaIdx)}>
+      {text}<br />
+      <p className='text-sm text-gray-500'>id={id}, dropAreaIdx={dropAreaIdx}</p>
+    </div>
+  )
+}
 
 export default MatchingQuestion;

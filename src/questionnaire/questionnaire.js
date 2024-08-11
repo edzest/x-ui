@@ -165,7 +165,7 @@ function Questionnaire() {
                     <MatchingQuestion
                         questionNumber={questionNumber}
                         question={question}
-                        selectedAnswers={selectedAnswer}
+                        selectedAnswer={selectedAnswer}
                         onAnswerChange={handleMatchingQuestionChange} />
                 )
             default:

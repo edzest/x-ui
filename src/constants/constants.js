@@ -43,39 +43,22 @@ export const TEST = [
         "explanation": "Explanation 1",
         "questionType": "matching-question",
         "id": "2",
-        "answers": [
-          {
-            "leftId": "1",
-            "rightId": "3"
-          },
-          {
-            "leftId": "2",
-            "rightId": "1"
-          },
-          {
-            "leftId": "3",
-            "rightId": "4"
-          },
-          {
-            "leftId": "4",
-            "rightId": "2"
-          }
-        ],
+        "answers": {"A": "3", "B": "1", "C": "4", "D": "2"},
         "leftOptions": [
           {
-            "id": "1",
+            "id": "A",
             "text": "Karachi"
           },
           {
-            "id": "2",
+            "id": "B",
             "text": "Delhi"
           },
           {
-            "id": "3",
+            "id": "C",
             "text": "Kathmandu"
           },
           {
-            "id": "4",
+            "id": "D",
             "text": "Columbo"
           }
         ],
