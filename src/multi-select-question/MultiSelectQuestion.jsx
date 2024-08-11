@@ -2,13 +2,15 @@
 /*
 answer = [1,2]
 */
-function MultiSelectQuestion({questionNumber, question, selectedAnswerIds, onAnswerChange}) {
+function MultiSelectQuestion({questionNumber, question, selectedAnswerIds = [], onAnswerChange}) {
     const handleOnChange = (event) => {
         const selectedAnswerId = event.target.value;
-        if (selectedAnswerIds.has(selectedAnswerId)) {
-            selectedAnswerIds.delete(selectedAnswerId)
+        console.log("selected ", selectedAnswerId)
+        const pos = selectedAnswerIds.findIndex(a => a === selectedAnswerId);
+        if (pos >= 0) {
+            selectedAnswerIds.splice(pos, 1)
         } else {
-            selectedAnswerIds.add(selectedAnswerId)
+            selectedAnswerIds.push(selectedAnswerId)
         }
         onAnswerChange(selectedAnswerIds)
     }
@@ -21,7 +23,7 @@ function MultiSelectQuestion({questionNumber, question, selectedAnswerIds, onAns
                             <label className='flex my-3'>
                                 <input type="checkbox"
                                     className='checkbox checkbox-primary mr-3'
-                                    checked={selectedAnswerIds.has(option.id)}
+                                    checked={selectedAnswerIds.some(id => id === option.id)}
                                     onChange={handleOnChange}
                                     value={option.id} />
                                 {option.text}
