@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
-const MatchingQuestion = ({ questionNumber, question, selectedAnswer = {}, onAnswerChange}) => {
+const MatchingQuestion = ({ questionNumber, question, selectedAnswer = {}, onAnswerChange }) => {
 
   // set item to dataTransfer object, item contains id, text and dragAreaIdx
   const handleDragStart = (e, item) => {
@@ -12,100 +12,108 @@ const MatchingQuestion = ({ questionNumber, question, selectedAnswer = {}, onAns
     e.preventDefault();
   };
 
-  const handleOnDropLeft = (e) => {
-    const droppedItem = JSON.parse(e.dataTransfer.getData("application/json"));
-    console.log(`dropped in left side, ${JSON.stringify(droppedItem)}`)
-    if (!leftItems.some(i => i.props.id === droppedItem.id)) {
-      // dragged from right and dropped in left
-      setLeftItems(prevLeftItems => {
-        return [
-          ...prevLeftItems,
-          <DraggableOption key={crypto.randomUUID()}
-            id={droppedItem.id}
-            text={droppedItem.text}
-            dropAreaIdx={question.leftOptions.length}
-            handleDragStart={handleDragStart} />
-        ]
-      })
-      setRightItems(prevRightItems => {
-        return prevRightItems.map(item => {
-          // Find the corresponding item on the right and replace it with RightAnswerArea
-          if (item.props.id === droppedItem.id) {
-            console.log("item props id ", item.props.id)
-            console.log("droppedItem", JSON.stringify(droppedItem))
-            const correspondingRightOption = question.rightOptions[droppedItem.dropAreaIdx]
-            console.log(JSON.stringify(correspondingRightOption))
-            return (
-              <RightAnswerArea
-                key={crypto.randomUUID()}
-                id={correspondingRightOption.id}
-                text={correspondingRightOption.text}
-                dropAreaIdx={item.props.dropAreaIdx}
-                handleDragOver={handleDragOver}
-                handleOnDropRight={handleOnDropRight}
-              />
-            );
-          }
-          return item;
-        });
-      });
-      delete selectedAnswer[droppedItem.id];
-      console.log("selectedAnswer ", selectedAnswer)
-      onAnswerChange(selectedAnswer)
-    }
-  }
-
   const handleOnDropRight = (e, dropAreaIdx) => {
     const droppedItem = JSON.parse(e.dataTransfer.getData("application/json"));
-    console.log(`dropped in right side dropIdx=${dropAreaIdx} item=${JSON.stringify(droppedItem)}`)
-    if (droppedItem.dropAreaIdx === question.leftOptions.length) {
+    const from = droppedItem.dropAreaIdx
+    const to = dropAreaIdx
+
+    if (from < question.leftOptions.length) {
       // dropped from left to right
       setLeftItems(prevLeftItems => {
-        const leftPos = prevLeftItems.findIndex(item => item.props.id === droppedItem.id)
-        console.log("left pos ", leftPos)
-        return prevLeftItems.toSpliced(leftPos, 1)
+        return prevLeftItems.toSpliced(
+          from, 1, <EmptyDropArea key={crypto.randomUUID()}
+            dropAreaIdx={from}
+            handleDragOver={handleDragOver}
+            handleOnDropEmpty={handleOnDropEmpty} />)
       })
-      setRightItems(prevRightItems => prevRightItems.toSpliced(dropAreaIdx, 1, <DraggableOption key={crypto.randomUUID()}
+      setRightItems(prevRightItems => prevRightItems.toSpliced(to % question.leftOptions.length, 1, <DraggableOption key={crypto.randomUUID()}
         id={droppedItem.id}
         text={droppedItem.text}
-        dropAreaIdx={dropAreaIdx}
+        dropAreaIdx={to}
         handleDragStart={handleDragStart} />
       ))
     } else {
       // moved up & down
-      const from = droppedItem.dropAreaIdx
-      const to = dropAreaIdx
-      const correspondingRightOption = question.rightOptions[from]
+      const correspondingRightOption = question.rightOptions[from % question.rightOptions.length]
       setRightItems(prevRightItems => {
-        prevRightItems
-          .toSpliced(from, 1, <DraggableOption key={crypto.randomUUID()}
-            id={droppedItem.id}
-            text={droppedItem.text}
-            dropAreaIdx={dropAreaIdx}
-            handleDragStart={handleDragStart} />)
-          .toSpliced(to, 1, <RightAnswerArea
+        return prevRightItems
+          .toSpliced(from % question.leftOptions.length, 1, <RightAnswerArea
             key={crypto.randomUUID()}
             id={correspondingRightOption.id}
             text={correspondingRightOption.text}
-            dropAreaIdx={dropAreaIdx}
+            dropAreaIdx={from}
+            handleDragOver={handleDragOver}
+            handleOnDropRight={handleOnDropRight}
+          />)
+          .toSpliced(to % question.leftOptions.length, 1, <DraggableOption key={crypto.randomUUID()}
+            id={droppedItem.id}
+            text={droppedItem.text}
+            dropAreaIdx={to}
+            handleDragStart={handleDragStart} />)
+      })
+    }
+    selectedAnswer[droppedItem.id] = question.rightOptions[to % question.leftOptions.length]?.id;
+    onAnswerChange(selectedAnswer)
+  }
+
+  const handleOnDropEmpty = (e, dropAreaIdx) => {
+    const droppedItem = JSON.parse(e.dataTransfer.getData("application/json"));
+    const from = droppedItem.dropAreaIdx;
+    const to = dropAreaIdx;
+
+    if (from < question.leftOptions.length) {
+      // up-down in left side - no change in answer
+      setLeftItems(prevLeftItems => {
+        return prevLeftItems.toSpliced(
+          from, 1, <EmptyDropArea key={crypto.randomUUID()}
+            dropAreaIdx={from}
+            handleDragOver={handleDragOver}
+            handleOnDropEmpty={handleOnDropEmpty} />
+        ).toSpliced(to, 1, <DraggableOption key={crypto.randomUUID()}
+          id={droppedItem.id}
+          text={droppedItem.text}
+          dropAreaIdx={dropAreaIdx}
+          handleDragStart={handleDragStart} />)
+      })
+    } else {
+      // dragged from right to left
+      setLeftItems(prevLeftItems => {
+        return prevLeftItems.toSpliced(to, 1,
+          <DraggableOption key={crypto.randomUUID()}
+            id={droppedItem.id}
+            text={droppedItem.text}
+            dropAreaIdx={to}
+            handleDragStart={handleDragStart} />)
+      })
+      setRightItems(prevRightItems => {
+        const correspondingRightOption = question.rightOptions[from % question.leftOptions.length]
+        return prevRightItems.toSpliced(from % question.leftOptions.length, 1,
+          <RightAnswerArea
+            key={crypto.randomUUID()}
+            id={correspondingRightOption.id}
+            text={correspondingRightOption.text}
+            dropAreaIdx={from}
             handleDragOver={handleDragOver}
             handleOnDropRight={handleOnDropRight}
           />)
       })
     }
-    selectedAnswer[droppedItem.id] = question.rightOptions[dropAreaIdx]?.id;
-    console.log("selectedAnswer ", selectedAnswer)
+    delete selectedAnswer[droppedItem.id]
     onAnswerChange(selectedAnswer)
   }
 
-  const [leftItems, setLeftItems] = useState(question.leftOptions.filter(option => !(option.id in selectedAnswer)).map(option => {
-    return <DraggableOption
-      key={crypto.randomUUID()}
-      id={option.id}
-      text={option.text}
-      dropAreaIdx={question.leftOptions.length}
-      handleDragStart={handleDragStart}
-    />
+  const [leftItems, setLeftItems] = useState(question.leftOptions.map((option, index) => {
+    if (option.id in selectedAnswer) {
+      return <EmptyDropArea key={crypto.randomUUID()} dropAreaIdx={index} handleDragOver={handleDragOver} handleOnDropEmpty={handleOnDropEmpty} />
+    } else {
+      return <DraggableOption
+        key={crypto.randomUUID()}
+        id={option.id}
+        text={option.text}
+        dropAreaIdx={index}
+        handleDragStart={handleDragStart}
+      />
+    }
   }));
 
   const [rightItems, setRightItems] = useState(question.rightOptions.map((option, index) => {
@@ -115,14 +123,14 @@ const MatchingQuestion = ({ questionNumber, question, selectedAnswer = {}, onAns
       return <DraggableOption id={leftOption.id}
         key={crypto.randomUUID()}
         text={leftOption.text}
-        dropAreaIdx={index}
+        dropAreaIdx={question.leftOptions.length + index}
         handleDragStart={handleDragStart} />
     } else {
       return <RightAnswerArea
         key={crypto.randomUUID()}
         id={option.id}
         text={option.text}
-        dropAreaIdx={index}
+        dropAreaIdx={question.leftOptions.length + index}
         handleDragOver={handleDragOver}
         handleOnDropRight={handleOnDropRight} />
     }
@@ -133,9 +141,9 @@ const MatchingQuestion = ({ questionNumber, question, selectedAnswer = {}, onAns
       <h4>{`Q ${questionNumber}: ${question.text}`}</h4>
 
       <div className="flex my-6">
-        <div className="flex-1 mr-1 p-2"
-          onDragOver={(e) => handleDragOver(e)}
-          onDrop={e => handleOnDropLeft(e)}>
+        <div className="flex-1 mr-1 p-2">
+          {/* // onDragOver={(e) => handleDragOver(e)}
+          // onDrop={e => handleOnDropLeft(e)}> */}
           <div className='grid grid-cols-1 gap-3'>
             {
               leftItems.map(i => i)
@@ -163,7 +171,7 @@ const DraggableOption = ({ id, text, dropAreaIdx, handleDragStart }) => {
       draggable="true"
       onDragStart={(e) => handleDragStart(e, option)}>
       <div className='bg-base-100 shadow cursor-grab p-3 border w-full'>
-        {text}
+        {id}: {text}
       </div>
     </motion.div>
   );
@@ -175,7 +183,18 @@ const RightAnswerArea = ({ id, text, dropAreaIdx, handleDragOver, handleOnDropRi
       className='border p-3 bg-base-200 shadow-inner'
       onDragOver={(e) => handleDragOver(e)}
       onDrop={(e) => handleOnDropRight(e, dropAreaIdx)}>
-      {text}
+      {id}: {text}
+    </div>
+  )
+}
+
+const EmptyDropArea = ({ dropAreaIdx, handleDragOver, handleOnDropEmpty }) => {
+  return (
+    <div className='border border-dashed p-3 shadow-inner'
+      onDragOver={(e) => handleDragOver(e)}
+      onDrop={(e) => handleOnDropEmpty(e, dropAreaIdx)}>
+      {/* hack to set minimum height, hihihi 😈 */}
+      <span className='text-base-100'>.</span>
     </div>
   )
 }
