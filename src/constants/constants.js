@@ -38,7 +38,7 @@ export const TEST = [
       },
       {
         "id": "2",
-        "questionType": "single-select",
+        "questionType": "multi-select",
         "text": "A project manager needs stakeholder involvement to identify strategy and note down operational assumptions and constraints. Unfortunately, the project manager is finding it hard to obtain consistent input due to lack of participation. In which two ways can the project manager encourage the stakeholder to participate and collaborate better? (Choose Two)",
         "options": [
           {
@@ -126,23 +126,23 @@ export const TEST = [
       {
         "id": "5",
         "questionType": "single-select",
-        "text": "A Project team is estimating the items in the product backlog. They have discussed multiple ways to finish the first priority work item, but the best way has not yet been finalized. The team discusses the issue with the scrum master. What should the Scrum master do? ",
+        "text": "A Project is running late and incurring more expenses than what was planned. As a result, the client is not happy with the Project and has contacted the executive management team of the performing organization to understand the reason and plan for mitigation. The Management has asked the Project Manager to work on improving the project condition. What should the Project Manager do first? ",
         "options": [
           {
             "id": "1",
-            "text": "Act as a servant leader to resolve the pending business process issues while the team attends a team building event."
+            "text": "Reprimand the team for negligence in the project."
           },
           {
             "id": "2",
-            "text": "Dedicate the next iteration to training the team on the business process to help them work more autonomously."
+            "text": "Figure out cost saving opportunities."
           },
           {
             "id": "3",
-            "text": "Work with processes owners to streamline procedures and secure the team coaching on the processes."
+            "text": "Fast-track the project to complete before time."
           },
           {
             "id": "4",
-            "text": "Work with the team to increase the story point estimates in the backlog to account for the business process delays."
+            "text": "Review the scope and project objectives with the team."
           }
         ],
       },
@@ -155,23 +155,24 @@ export const ANSWER_SHEET = [
   {
     "question": {
       "id": "1",
+      "questionType": "single-select",
       "text": "A Project team is estimating the items in the product backlog. They have discussed multiple ways to finish the first priority work item, but the best way has not yet been finalized. The team discusses the issue with the scrum master. What should the Scrum master do? ",
       "options": [
         {
           "id": "1",
-          "text": "Act as a servant leader to resolve the pending business process issues while the team attends a team building event."
+          "text": "Add rank alternative to the priority."
         },
         {
           "id": "2",
-          "text": "Dedicate the next iteration to training the team on the business process to help them work more autonomously."
+          "text": "Select the cheapest alternative to build first."
         },
         {
           "id": "3",
-          "text": "Work with processes owners to streamline procedures and secure the team coaching on the processes."
+          "text": "Facilitate participatory decision making to finalize."
         },
         {
           "id": "4",
-          "text": "Work with the team to increase the story point estimates in the backlog to account for the business process delays."
+          "text": "Select the fastest alternative to build first."
         }
       ],
       "correctOptionId": "3",
@@ -182,108 +183,130 @@ export const ANSWER_SHEET = [
   {
     "question": {
       "id": "2",
-      "text": "The agile team is in the sprint planning meeting. The product owner presents a set of user stories from the product backlog. What should the team do next?",
+      "questionType": "multi-select",
+      "text": "A project manager needs stakeholder involvement to identify strategy and note down operational assumptions and constraints. Unfortunately, the project manager is finding it hard to obtain consistent input due to lack of participation. In which two ways can the project manager encourage the stakeholder to participate and collaborate better? (Choose Two)",
       "options": [
         {
           "id": "1",
-          "text": "Start coding and development"
+          "text": "Use political awareness techniques."
         },
         {
           "id": "2",
-          "text": "Assign tasks to individual team members"
+          "text": "Be a servant leader."
         },
         {
           "id": "3",
-          "text": "Estimate the effort required for each user story"
+          "text": "Time box meetings."
         },
         {
           "id": "4",
-          "text": "Seek clarification on the user story from the product owner"
+          "text": "Use effective facilitation techniques."
         }
       ],
-      "correctOptionId": "3",
-      "explanation": "sample explanation text for q2"
+      "correctOptionIds": ["3", "4"],
+      "explanation": "Facilitation is the ability to effectively guide a group event to a successful decision, solution or conclusion. A facilitator ensures effective participation, so that participants achieve a mutual understanding, that all contributions are considered, that conclusions or results have full buy-in according to the decision process established for the project and that the actions and agreements achieved are appropriately dealt with afterward."
     },
     "selectedAnswerId": ""
   },
   {
     "question": {
       "id": "3",
-      "text": "The agile team has completed a sprint and is conducting a sprint review. What is the main objective of the sprint review?",
+      "questionType": "single-select",
+      "text": "After three agile iterations showed a trend of increasingly prolonged test work, the team performed an intensive backlog refinement. What metrics would show that the problem was effectively addressed?",
       "options": [
         {
           "id": "1",
-          "text": "To plan the work for the next sprint."
+          "text": "Increase in value per story."
         },
         {
           "id": "2",
-          "text": "To present the completed work to stakeholders."
+          "text": "Speed of impediment resolution."
         },
         {
           "id": "3",
-          "text": "To retrospect on the team's performance."
+          "text": "Stories completed per iteration. "
         },
         {
           "id": "4",
-          "text": "To update the project schedule."
+          "text": "Decrease in backlog item count."
         }
       ],
-      "correctOptionId": "2",
-      "explanation": "sample explanation text for q3"
+      "correctOptionId": "3",
+      "explanation": "Refinement results in smaller, less complex stories, which allows the team to complete them faster."
     },
     "selectedAnswerId": ""
   },
   {
     "question": {
       "id": "4",
-      "text": "During the sprint retrospective, the agile team identifies a process improvement opportunity. What should the team do next?",
-      "options": [
+      "questionType": "matching-question",
+      "text": "You are managing a highly visible project for your organization. The Project sponsor is regularly following up with you on the costs you are sending behind maintaining the quality of your products to be delivered. Keep in mind that there are many small products which are being delivered at different phases of the project. Match each of the following cost-types with their correct scenario/definition",
+      "leftOptions": [
+        {
+          "id": "A",
+          "text": "Prevention cost"
+        },
+        {
+          "id": "B",
+          "text": "Appraisal Cost"
+        },
+        {
+          "id": "C",
+          "text": "Internal Failure Cost"
+        },
+        {
+          "id": "D",
+          "text": "External Failure cost"
+        }
+      ],
+      "rightOptions": [
         {
           "id": "1",
-          "text": "Implement the suggested improvement."
+          "text": "Your project team members found some failure and must scrap the product"
         },
         {
           "id": "2",
-          "text": "Discuss with the product owner to add the improvement to the product backlog."
+          "text": "Due to warranty clause mentioned on the contract, you must redo the work on some of the failures found by the customer"
         },
         {
           "id": "3",
-          "text": "Prioritize the improvement in the product backlog."
+          "text": "Testing required to assess the quality of the product"
         },
         {
           "id": "4",
-          "text": "Assign the improvement task to a specific team member."
+          "text": "Training required to build a Quality Product"
         }
       ],
-      "correctOptionId": "2",
-      "explanation": "sample explanation text for q4"
+      "correctOptionIds": { "A": "4", "B": "3", "C": "1", "D": "2" },
+      "explanation": ""
     },
     "selectedAnswerId": ""
   },
   {
     "question": {
       "id": "5",
-      "text": "The agile team is experiencing technical challenges that are hindering their progress. What should the team do?",
+      "questionType": "single-select",
+      "text": "A Project is running late and incurring more expenses than what was planned. As a result, the client is not happy with the Project and has contacted the executive management team of the performing organization to understand the reason and plan for mitigation. The Management has asked the Project Manager to work on improving the project condition. What should the Project Manager do first? ",
       "options": [
         {
           "id": "1",
-          "text": "Inform the project sponsor about the challenges."
+          "text": "Reprimand the team for negligence in the project."
         },
         {
           "id": "2",
-          "text": "Assign additional resources to overcome the challenges."
+          "text": "Figure out cost saving opportunities."
         },
         {
           "id": "3",
-          "text": "Collaborate to find solutions and remove impediments."
+          "text": "Fast-track the project to complete before time."
         },
         {
           "id": "4",
-          "text": "Extend the duration of the current sprint to address the challenges."
+          "text": "Review the scope and project objectives with the team."
         }
       ],
-      "correctOptionId": "3",
-      "explanation": "sample explanation text for q5"
+      "correctOptionId": "4",
+      "explanation": "The project discussed in the question is going through a lot of issues, in such cases, it is important to understand the root cause of the problem to bring the project back to control. One the best approaches will be to analyse the situation with the team and discuss to create an action plan. Option D talks about the analysis required to be done. All other options talk about some kind of decisions to be taken, which is not justified with the information given in the question. Reviewing and Analysing will help the team understand which actions would help the project the most. Hence, D is the best choice.  Exam tip: For any problems, concerns., issues etc. before taking a decision, it is always better to understand the situation and review/analyse to understand the best possible decisions to be taken in the project. Understand >> Analyse >> Decision."
     },
     "selectedAnswerId": ""
   }
