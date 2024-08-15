@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 const MatchingQuestion = ({ questionNumber, question, selectedAnswer = {}, onAnswerChange }) => {
@@ -107,39 +107,86 @@ const MatchingQuestion = ({ questionNumber, question, selectedAnswer = {}, onAns
     onAnswerChange(selectedAnswer)
   }
 
-  const [leftItems, setLeftItems] = useState(question.leftOptions.map((option, index) => {
-    if (option.id in selectedAnswer) {
-      return <EmptyDropArea key={`left-${index}`} dropAreaIdx={index} handleDragOver={handleDragOver} handleOnDropEmpty={handleOnDropEmpty} />
-    } else {
-      return <DraggableOption
-        key={`left-${index}`}
-        id={option.id}
-        text={option.text}
-        dropAreaIdx={index}
-        handleDragStart={handleDragStart}
-      />
-    }
-  }));
+  const [leftItems, setLeftItems] = useState([]);
+  const [rightItems, setRightItems] = useState([]);
 
-  const [rightItems, setRightItems] = useState(question.rightOptions.map((option, index) => {
-    let leftId = Object.entries(selectedAnswer).find(([key, val]) => val === option.id)?.[0]
-    if (leftId !== undefined) {
-      const leftOption = question.leftOptions.find(o => o.id === leftId)
-      return <DraggableOption id={leftOption.id}
-        key={`right-${question.leftOptions.length + index}`}
-        text={leftOption.text}
-        dropAreaIdx={question.leftOptions.length + index}
-        handleDragStart={handleDragStart} />
-    } else {
-      return <RightAnswerArea
-        key={`right-${question.leftOptions.length + index}`}
-        id={option.id}
-        text={option.text}
-        dropAreaIdx={question.leftOptions.length + index}
-        handleDragOver={handleDragOver}
-        handleOnDropRight={handleOnDropRight} />
-    }
-  }));
+  useEffect(() => {
+    // Update leftItems based on selectedAnswer
+    const updatedLeftItems = question.leftOptions.map((option, index) => {
+      if (selectedAnswer && option.id in selectedAnswer) {
+        return <EmptyDropArea key={`left-${index}`} dropAreaIdx={index} handleDragOver={handleDragOver} handleOnDropEmpty={handleOnDropEmpty} />
+      } else {
+        return <DraggableOption
+          key={`left-${index}`}
+          id={option.id}
+          text={option.text}
+          dropAreaIdx={index}
+          handleDragStart={handleDragStart}
+        />
+      }
+    });
+    setLeftItems(updatedLeftItems);
+
+    // Update rightItems based on selectedAnswer
+    const updatedRightItems = question.rightOptions.map((option, index) => {
+      let leftId = Object.entries(selectedAnswer).find(([key, val]) => val === option.id)?.[0];
+      if (leftId !== undefined) {
+        const leftOption = question.leftOptions.find(o => o.id === leftId);
+        return <DraggableOption id={leftOption.id}
+          key={`right-${question.leftOptions.length + index}`}
+          text={leftOption.text}
+          dropAreaIdx={question.leftOptions.length + index}
+          handleDragStart={handleDragStart} />
+      } else {
+        return <RightAnswerArea
+          key={`right-${question.leftOptions.length + index}`}
+          id={option.id}
+          text={option.text}
+          dropAreaIdx={question.leftOptions.length + index}
+          handleDragOver={handleDragOver}
+          handleOnDropRight={handleOnDropRight} />
+      }
+    });
+    setRightItems(updatedRightItems);
+
+  }, [question.leftOptions, question.rightOptions, selectedAnswer]);
+
+  // const [leftItems, setLeftItems] = useState(question.leftOptions.map((option, index) => {
+  //   if (selectedAnswer && option.id in selectedAnswer) {
+  //     return <EmptyDropArea key={`left-${index}`} dropAreaIdx={index} handleDragOver={handleDragOver} handleOnDropEmpty={handleOnDropEmpty} />
+  //   } else {
+  //     return <DraggableOption
+  //       key={`left-${index}`}
+  //       id={option.id}
+  //       text={option.text}
+  //       dropAreaIdx={index}
+  //       handleDragStart={handleDragStart}
+  //     />
+  //   }
+  // }));
+
+  // const [rightItems, setRightItems] = useState(question.rightOptions.map((option, index) => {
+  //   if (!selectedAnswer) {
+  //     selectedAnswer = {}
+  //   }
+  //   let leftId = Object.entries(selectedAnswer).find(([key, val]) => val === option.id)?.[0]
+  //   if (leftId !== undefined) {
+  //     const leftOption = question.leftOptions.find(o => o.id === leftId)
+  //     return <DraggableOption id={leftOption.id}
+  //       key={`right-${question.leftOptions.length + index}`}
+  //       text={leftOption.text}
+  //       dropAreaIdx={question.leftOptions.length + index}
+  //       handleDragStart={handleDragStart} />
+  //   } else {
+  //     return <RightAnswerArea
+  //       key={`right-${question.leftOptions.length + index}`}
+  //       id={option.id}
+  //       text={option.text}
+  //       dropAreaIdx={question.leftOptions.length + index}
+  //       handleDragOver={handleDragOver}
+  //       handleOnDropRight={handleOnDropRight} />
+  //   }
+  // }));
 
   function* alternateIterator(leftItems, rightItems) {
     const maxLength = Math.max(leftItems.length, rightItems.length);
@@ -156,6 +203,8 @@ const MatchingQuestion = ({ questionNumber, question, selectedAnswer = {}, onAns
 
   return (
     <div>
+      {
+    console.log("rendering matching question, selectedAnswer = ", selectedAnswer)}
       <h4>{`Q ${questionNumber}: ${question.text}`}</h4>
 
       <div className="grid grid-cols-2 gap-4 my-6 auto-rows-fr grid-cols-[1fr_3fr]">
