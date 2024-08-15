@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { TEST, ANSWER_SHEET } from '../constants/constants';
 import { FiX } from "react-icons/fi";
@@ -8,7 +8,7 @@ import MultiSelectQuestion from '../multi-select-question/MultiSelectQuestion';
 
 function Questionnaire() {
     const [questions, setQuestions] = useState(new Map());
-    const [matchingQuestions, setMatchingQuestions] = useState(new Map());
+    // const [matchingQuestions, setMatchingQuestions] = useState(new Map());
     const [currentIndex, setCurrentIndex] = useState(0);
     const [answers, setAnswers] = useState({});
     const navigate = useNavigate();
@@ -27,26 +27,26 @@ function Questionnaire() {
                 let a = ANSWER_SHEET.find(a => a.question.id === questionId);
                 a.selectedAnswerId = answer;
                 console.log("setting aId = ", answer, " to qId = ", questionId);
-            } else {
-                const q = matchingQuestions.get(parseInt(questionId));
-                const correctAnswer = q.answers;
-                if (correctAnswer.length !== answer.length) {
-                    // if matchingQuestions left size is not matching answer size, then continue;
-                    return;
-                } else {
-                    let wrong = false;
-                    for (let i = 0; i < answer.length; i++) {
-                        const answerMapping = correctAnswer.find(a => a.leftId === answer[i].leftId);
-                        if (answerMapping.rightId !== answer[i].rightId) {
-                            wrong = true;
-                            break;
-                        }
-                    }
-                    if (!wrong) {
-                        score++;
-                    }
+            // } else {
+            //     const q = matchingQuestions.get(parseInt(questionId));
+            //     const correctAnswer = q.answers;
+            //     if (correctAnswer.length !== answer.length) {
+            //         // if matchingQuestions left size is not matching answer size, then continue;
+            //         return;
+            //     } else {
+            //         let wrong = false;
+            //         for (let i = 0; i < answer.length; i++) {
+            //             const answerMapping = correctAnswer.find(a => a.leftId === answer[i].leftId);
+            //             if (answerMapping.rightId !== answer[i].rightId) {
+            //                 wrong = true;
+            //                 break;
+            //             }
+            //         }
+            //         if (!wrong) {
+            //             score++;
+            //         }
 
-                }
+            //     }
 
             }
         }
@@ -71,13 +71,13 @@ function Questionnaire() {
                     return map;
                 }, new Map());
 
-                const matchingQuestionsMap = data['matchingQuestions'].reduce((map, matchingQuestion) => {
-                    map.set(parseInt(matchingQuestion.id), matchingQuestion);
-                    return map;
-                }, new Map());
+                // const matchingQuestionsMap = data['matchingQuestions'].reduce((map, matchingQuestion) => {
+                //     map.set(parseInt(matchingQuestion.id), matchingQuestion);
+                //     return map;
+                // }, new Map());
 
                 setQuestions(questionsMap);
-                setMatchingQuestions(matchingQuestionsMap);
+                // setMatchingQuestions(matchingQuestionsMap);
             })
             .then(resetAnswers())
             .catch(error => console.error(error));
@@ -85,12 +85,12 @@ function Questionnaire() {
 
     const handleNext = () => {
         console.log(answers)
-        setCurrentIndex((currentIndex + 1) % (questions.size + matchingQuestions.size));
+        setCurrentIndex((currentIndex + 1) % (questions.size));
     };
 
     const handlePrevious = () => {
         console.log(answers)
-        setCurrentIndex((currentIndex - 1 + (questions.size + matchingQuestions.size)) % (questions.size + matchingQuestions.size));
+        setCurrentIndex((currentIndex - 1 + (questions.size)) % (questions.size));
     };
 
     const handleClear = () => {
@@ -128,14 +128,14 @@ function Questionnaire() {
         });
     }
 
-    if (!questions.size && !matchingQuestions.size) return <div>Loading...</div>;
-
-    const handleAnswerChange = (selectedAnswerId) => {
+    const handleAnswerChange = useCallback((selectedAnswerId) => {
         setAnswers({
             ...answers,
             [currentIndex + 1]: selectedAnswerId
         })
-    }
+    }, [currentIndex, answers])
+
+    if (!questions.size) return <div>Loading...</div>;
 
     const renderQuestion = (questionNumber, question, selectedAnswer) => {
         switch (question.questionType) {
