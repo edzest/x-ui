@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import Nav from '../common/Nav';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { ASNWER_SHEET } from '../constants/constants';
+import { ANSWER_SHEET } from '../constants/constants';
 
 function Solution() {
     const location = useLocation();
     const navigate = useNavigate();
-    const answerSheet = location.state ? location.state.answerSheet : ASNWER_SHEET;
+    const answerSheet = location.state ? location.state.answerSheet : ANSWER_SHEET;
     const [currentIndex, setCurrentIndex] = useState(0);
 
     const checkAnswer = () => {

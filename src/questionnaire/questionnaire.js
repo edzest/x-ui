@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { TEST, ASNWER_SHEET } from '../constants/constants';
+import { TEST, ANSWER_SHEET } from '../constants/constants';
 import { FiX } from "react-icons/fi";
 import MatchingQuestion from '../matching-question/MatchingQuestion';
 import SingleSelectQuestion from '../single-select-question/SingleSelectQuestion';
@@ -24,7 +24,7 @@ function Questionnaire() {
                 }
 
                 // setting selected answers
-                let a = ASNWER_SHEET.find(a => a.question.id === questionId);
+                let a = ANSWER_SHEET.find(a => a.question.id === questionId);
                 a.selectedAnswerId = answer;
                 console.log("setting aId = ", answer, " to qId = ", questionId);
             } else {
@@ -56,7 +56,7 @@ function Questionnaire() {
 
     // temporarily reset answers
     const resetAnswers = () => {
-        ASNWER_SHEET.forEach(a => {
+        ANSWER_SHEET.forEach(a => {
             a.selectedAnswerId = "";
         });
     }
@@ -94,10 +94,12 @@ function Questionnaire() {
     };
 
     const handleClear = () => {
-        setAnswers({
-            ...answers,
-            [currentIndex + 1]: null
-        });
+        setAnswers(prevAnswers => {
+            const updatedAnswers = {...prevAnswers}
+            delete updatedAnswers[currentIndex + 1]
+            console.log("updatedAnswer", updatedAnswers)
+            return updatedAnswers
+        })
     }
 
     const handleSubmit = () => {
@@ -129,7 +131,6 @@ function Questionnaire() {
     if (!questions.size && !matchingQuestions.size) return <div>Loading...</div>;
 
     const handleAnswerChange = (selectedAnswerId) => {
-        console.log("in handleAnswerChange, selectedAnswerId = ", selectedAnswerId)
         setAnswers({
             ...answers,
             [currentIndex + 1]: selectedAnswerId

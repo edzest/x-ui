@@ -31,7 +31,9 @@ function SingleSelectQuestion({questionNumber, question, selectedAnswerId, onAns
     }
     
     return (
+        
         <div>
+            {console.log("rendered single question, selectedAnswerId = ", selectedAnswerId)}
             <h4>{`Q ${questionNumber}: ${question.text}`}</h4>
                 <div className='my-6'>
                     {question.options.map((option, index) => (

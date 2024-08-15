@@ -344,7 +344,7 @@ export const TEST = [
 ]
 
 
-export const ASNWER_SHEET = [
+export const ANSWER_SHEET = [
   {
       "question": {
           "id": "1",
