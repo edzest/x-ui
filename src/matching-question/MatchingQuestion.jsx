@@ -1,7 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion } from 'framer-motion';
 
 const MatchingQuestion = ({ questionNumber, question, selectedAnswer = {}, onAnswerChange }) => {
+
+  const selectedAnswerRef = useRef(selectedAnswer); 
+  selectedAnswerRef.current = selectedAnswer;
 
   // set item to dataTransfer object, item contains id, text and dragAreaIdx
   const handleDragStart = (e, item) => {
@@ -12,53 +15,7 @@ const MatchingQuestion = ({ questionNumber, question, selectedAnswer = {}, onAns
     e.preventDefault();
   };
 
-  const handleOnDropRight = (e, dropAreaIdx) => {
-    const droppedItem = JSON.parse(e.dataTransfer.getData("application/json"));
-    const from = droppedItem.dropAreaIdx
-    const to = dropAreaIdx
-
-    if (from < question.leftOptions.length) {
-      // dropped from left to right
-      setLeftItems(prevLeftItems => {
-        return prevLeftItems.toSpliced(
-          from, 1, <EmptyDropArea key={`left-${from}`}
-            dropAreaIdx={from}
-            handleDragOver={handleDragOver}
-            handleOnDropEmpty={handleOnDropEmpty} />)
-      })
-      setRightItems(prevRightItems => prevRightItems.toSpliced(to % question.leftOptions.length, 1, <DraggableOption
-        key={`right-${to}`}
-        id={droppedItem.id}
-        text={droppedItem.text}
-        dropAreaIdx={to}
-        handleDragStart={handleDragStart} />
-      ))
-    } else {
-      // moved up & down
-      const correspondingRightOption = question.rightOptions[from % question.rightOptions.length]
-      setRightItems(prevRightItems => {
-        return prevRightItems
-          .toSpliced(from % question.leftOptions.length, 1, <RightAnswerArea
-            key={`right-${from}`}
-            id={correspondingRightOption.id}
-            text={correspondingRightOption.text}
-            dropAreaIdx={from}
-            handleDragOver={handleDragOver}
-            handleOnDropRight={handleOnDropRight}
-          />)
-          .toSpliced(to % question.leftOptions.length, 1, <DraggableOption
-            key={`right-${to}`}
-            id={droppedItem.id}
-            text={droppedItem.text}
-            dropAreaIdx={to}
-            handleDragStart={handleDragStart} />)
-      })
-    }
-    selectedAnswer[droppedItem.id] = question.rightOptions[to % question.leftOptions.length]?.id;
-    onAnswerChange(selectedAnswer)
-  }
-
-  const handleOnDropEmpty = (e, dropAreaIdx) => {
+  const handleOnDropEmpty = useCallback((e, dropAreaIdx) => {
     const droppedItem = JSON.parse(e.dataTransfer.getData("application/json"));
     const from = droppedItem.dropAreaIdx;
     const to = dropAreaIdx;
@@ -105,7 +62,53 @@ const MatchingQuestion = ({ questionNumber, question, selectedAnswer = {}, onAns
     }
     delete selectedAnswer[droppedItem.id]
     onAnswerChange(selectedAnswer)
-  }
+  }, [question.leftOptions.length, question.rightOptions, onAnswerChange])
+
+  const handleOnDropRight = useCallback((e, dropAreaIdx) => {
+    const droppedItem = JSON.parse(e.dataTransfer.getData("application/json"));
+    const from = droppedItem.dropAreaIdx
+    const to = dropAreaIdx
+
+    if (from < question.leftOptions.length) {
+      // dropped from left to right
+      setLeftItems(prevLeftItems => {
+        return prevLeftItems.toSpliced(
+          from, 1, <EmptyDropArea key={`left-${from}`}
+            dropAreaIdx={from}
+            handleDragOver={handleDragOver}
+            handleOnDropEmpty={handleOnDropEmpty} />)
+      })
+      setRightItems(prevRightItems => prevRightItems.toSpliced(to % question.leftOptions.length, 1, <DraggableOption
+        key={`right-${to}`}
+        id={droppedItem.id}
+        text={droppedItem.text}
+        dropAreaIdx={to}
+        handleDragStart={handleDragStart} />
+      ))
+    } else {
+      // moved up & down
+      const correspondingRightOption = question.rightOptions[from % question.rightOptions.length]
+      setRightItems(prevRightItems => {
+        return prevRightItems
+          .toSpliced(from % question.leftOptions.length, 1, <RightAnswerArea
+            key={`right-${from}`}
+            id={correspondingRightOption.id}
+            text={correspondingRightOption.text}
+            dropAreaIdx={from}
+            handleDragOver={handleDragOver}
+            handleOnDropRight={handleOnDropRight}
+          />)
+          .toSpliced(to % question.leftOptions.length, 1, <DraggableOption
+            key={`right-${to}`}
+            id={droppedItem.id}
+            text={droppedItem.text}
+            dropAreaIdx={to}
+            handleDragStart={handleDragStart} />)
+      })
+    }
+    selectedAnswer[droppedItem.id] = question.rightOptions[to % question.leftOptions.length]?.id;
+    onAnswerChange(selectedAnswer)
+  }, [question.leftOptions.length, question.rightOptions, onAnswerChange])
 
   const [leftItems, setLeftItems] = useState([]);
   const [rightItems, setRightItems] = useState([]);
@@ -113,7 +116,7 @@ const MatchingQuestion = ({ questionNumber, question, selectedAnswer = {}, onAns
   useEffect(() => {
     // Update leftItems based on selectedAnswer
     const updatedLeftItems = question.leftOptions.map((option, index) => {
-      if (selectedAnswer && option.id in selectedAnswer) {
+      if (selectedAnswerRef.current && option.id in selectedAnswerRef.current) {
         return <EmptyDropArea key={`left-${index}`} dropAreaIdx={index} handleDragOver={handleDragOver} handleOnDropEmpty={handleOnDropEmpty} />
       } else {
         return <DraggableOption
@@ -129,7 +132,7 @@ const MatchingQuestion = ({ questionNumber, question, selectedAnswer = {}, onAns
 
     // Update rightItems based on selectedAnswer
     const updatedRightItems = question.rightOptions.map((option, index) => {
-      let leftId = Object.entries(selectedAnswer).find(([key, val]) => val === option.id)?.[0];
+      let leftId = Object.entries(selectedAnswerRef.current).find(([key, val]) => val === option.id)?.[0];
       if (leftId !== undefined) {
         const leftOption = question.leftOptions.find(o => o.id === leftId);
         return <DraggableOption id={leftOption.id}
@@ -149,44 +152,7 @@ const MatchingQuestion = ({ questionNumber, question, selectedAnswer = {}, onAns
     });
     setRightItems(updatedRightItems);
 
-  }, [question.leftOptions, question.rightOptions, selectedAnswer]);
-
-  // const [leftItems, setLeftItems] = useState(question.leftOptions.map((option, index) => {
-  //   if (selectedAnswer && option.id in selectedAnswer) {
-  //     return <EmptyDropArea key={`left-${index}`} dropAreaIdx={index} handleDragOver={handleDragOver} handleOnDropEmpty={handleOnDropEmpty} />
-  //   } else {
-  //     return <DraggableOption
-  //       key={`left-${index}`}
-  //       id={option.id}
-  //       text={option.text}
-  //       dropAreaIdx={index}
-  //       handleDragStart={handleDragStart}
-  //     />
-  //   }
-  // }));
-
-  // const [rightItems, setRightItems] = useState(question.rightOptions.map((option, index) => {
-  //   if (!selectedAnswer) {
-  //     selectedAnswer = {}
-  //   }
-  //   let leftId = Object.entries(selectedAnswer).find(([key, val]) => val === option.id)?.[0]
-  //   if (leftId !== undefined) {
-  //     const leftOption = question.leftOptions.find(o => o.id === leftId)
-  //     return <DraggableOption id={leftOption.id}
-  //       key={`right-${question.leftOptions.length + index}`}
-  //       text={leftOption.text}
-  //       dropAreaIdx={question.leftOptions.length + index}
-  //       handleDragStart={handleDragStart} />
-  //   } else {
-  //     return <RightAnswerArea
-  //       key={`right-${question.leftOptions.length + index}`}
-  //       id={option.id}
-  //       text={option.text}
-  //       dropAreaIdx={question.leftOptions.length + index}
-  //       handleDragOver={handleDragOver}
-  //       handleOnDropRight={handleOnDropRight} />
-  //   }
-  // }));
+  }, [question.leftOptions, question.rightOptions, handleOnDropEmpty, handleOnDropRight]);
 
   function* alternateIterator(leftItems, rightItems) {
     const maxLength = Math.max(leftItems.length, rightItems.length);
