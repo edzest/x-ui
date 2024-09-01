@@ -15,10 +15,27 @@ function Solution() {
         if (selectedAnswer === "" || selectedAnswer === null || selectedAnswer === undefined) {
             return <h4 className='text-gray-500'>DID NOT ATTEMPT</h4>;
         }
-        if (selectedAnswer === correctAnswer) {
-            return <h4 className='text-success'>CORRECT</h4>
+        if (Array.isArray(selectedAnswer)) {
+            // For multi-select questions
+            if (JSON.stringify(selectedAnswer.sort()) === JSON.stringify(correctAnswer.sort())) {
+                return <h4 className='text-success'>CORRECT</h4>
+            } else {
+                return <h4 className='text-error'>INCORRECT</h4>
+            }
+        } else if (typeof selectedAnswer === 'object') {
+            // For matching questions
+            if (JSON.stringify(selectedAnswer) === JSON.stringify(correctAnswer)) {
+                return <h4 className='text-success'>CORRECT</h4>
+            } else {
+                return <h4 className='text-error'>INCORRECT</h4>
+            }
         } else {
-            return <h4 className='text-error'>INCORRECT</h4>
+            // For single-select questions
+            if (selectedAnswer === correctAnswer) {
+                return <h4 className='text-success'>CORRECT</h4>
+            } else {
+                return <h4 className='text-error'>INCORRECT</h4>
+            }
         }
     }
 
