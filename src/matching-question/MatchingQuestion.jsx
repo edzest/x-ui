@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion } from 'framer-motion';
 
-const MatchingQuestion = ({ questionNumber, question, selectedAnswer = {}, onAnswerChange }) => {
+const MatchingQuestion = ({ questionNumber, question, selectedAnswer = {}, onAnswerChange, correctAnswer }) => {
 
-  const selectedAnswerRef = useRef(selectedAnswer); 
+  const selectedAnswerRef = useRef(selectedAnswer);
   selectedAnswerRef.current = selectedAnswer;
 
   // set item to dataTransfer object, item contains id, text and dragAreaIdx
@@ -114,49 +114,56 @@ const MatchingQuestion = ({ questionNumber, question, selectedAnswer = {}, onAns
   const [rightItems, setRightItems] = useState([]);
 
   useEffect(() => {
-    // Update leftItems based on selectedAnswer
-    const updatedLeftItems = question.leftOptions.map((option, index) => {
-      if (selectedAnswerRef.current && option.id in selectedAnswerRef.current) {
-        return <EmptyDropArea key={`left-${index}`} dropAreaIdx={index} handleDragOver={handleDragOver} handleOnDropEmpty={handleOnDropEmpty} />
-      } else {
-        return <DraggableOption
-          key={`left-${index}`}
-          id={option.id}
-          text={option.text}
-          dropAreaIdx={index}
-          handleDragStart={handleDragStart}
-        />
-      }
-    });
-    setLeftItems(updatedLeftItems);
+    if (correctAnswer) {
+      // correctAnswer is provided
+      selectedAnswer = correctAnswer;
+      setLeftItems(Object.keys(correctAnswer).map(id => <FixedSolutionBox id={id} text={question.leftOptions.find(o => o.id === id).text} />))
+      setRightItems(Object.values(correctAnswer).map(id => <FixedSolutionBox id={id} text={question.rightOptions.find(o => o.id === id).text} />))
+    } else {
+      // Update leftItems based on selectedAnswer
+      const updatedLeftItems = question.leftOptions.map((option, index) => {
+        if (selectedAnswerRef.current && option.id in selectedAnswerRef.current) {
+          return <EmptyDropArea key={`left-${index}`} dropAreaIdx={index} handleDragOver={handleDragOver} handleOnDropEmpty={handleOnDropEmpty} />
+        } else {
+          return <DraggableOption
+            key={`left-${index}`}
+            id={option.id}
+            text={option.text}
+            dropAreaIdx={index}
+            handleDragStart={handleDragStart}
+          />
+        }
+      });
+      setLeftItems(updatedLeftItems);
 
-    // Update rightItems based on selectedAnswer
-    const updatedRightItems = question.rightOptions.map((option, index) => {
-      let leftId = Object.entries(selectedAnswerRef.current).find(([key, val]) => val === option.id)?.[0];
-      if (leftId !== undefined) {
-        const leftOption = question.leftOptions.find(o => o.id === leftId);
-        return <DraggableOption id={leftOption.id}
-          key={`right-${question.leftOptions.length + index}`}
-          text={leftOption.text}
-          dropAreaIdx={question.leftOptions.length + index}
-          handleDragStart={handleDragStart} />
-      } else {
-        return <RightAnswerArea
-          key={`right-${question.leftOptions.length + index}`}
-          id={option.id}
-          text={option.text}
-          dropAreaIdx={question.leftOptions.length + index}
-          handleDragOver={handleDragOver}
-          handleOnDropRight={handleOnDropRight} />
-      }
-    });
-    setRightItems(updatedRightItems);
+      // Update rightItems based on selectedAnswer
+      const updatedRightItems = question.rightOptions.map((option, index) => {
+        let leftId = Object.entries(selectedAnswerRef.current).find(([key, val]) => val === option.id)?.[0];
+        if (leftId !== undefined) {
+          const leftOption = question.leftOptions.find(o => o.id === leftId);
+          return <DraggableOption id={leftOption.id}
+            key={`right-${question.leftOptions.length + index}`}
+            text={leftOption.text}
+            dropAreaIdx={question.leftOptions.length + index}
+            handleDragStart={handleDragStart} />
+        } else {
+          return <RightAnswerArea
+            key={`right-${question.leftOptions.length + index}`}
+            id={option.id}
+            text={option.text}
+            dropAreaIdx={question.leftOptions.length + index}
+            handleDragOver={handleDragOver}
+            handleOnDropRight={handleOnDropRight} />
+        }
+      });
+      setRightItems(updatedRightItems);
+    }
 
   }, [question.leftOptions, question.rightOptions, handleOnDropEmpty, handleOnDropRight]);
 
   function* alternateIterator(leftItems, rightItems) {
     const maxLength = Math.max(leftItems.length, rightItems.length);
-  
+
     for (let i = 0; i < maxLength; i++) {
       if (i < leftItems.length) {
         yield leftItems[i];
@@ -169,8 +176,6 @@ const MatchingQuestion = ({ questionNumber, question, selectedAnswer = {}, onAns
 
   return (
     <div>
-      {
-    console.log("rendering matching question, selectedAnswer = ", selectedAnswer)}
       <h4>{`Q ${questionNumber}: ${question.text}`}</h4>
 
       <div className="grid grid-cols-2 gap-4 my-6 auto-rows-fr grid-cols-[1fr_3fr]">
@@ -201,6 +206,14 @@ const RightAnswerArea = ({ id, text, dropAreaIdx, handleDragOver, handleOnDropRi
       className='border p-3 bg-base-200 shadow-inner'
       onDragOver={(e) => handleDragOver(e)}
       onDrop={(e) => handleOnDropRight(e, dropAreaIdx)}>
+      {id}: {text}
+    </div>
+  )
+}
+
+const FixedSolutionBox = ({ id, text }) => {
+  return (
+    <div className='border p-3'>
       {id}: {text}
     </div>
   )
