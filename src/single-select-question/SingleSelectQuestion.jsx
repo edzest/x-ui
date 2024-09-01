@@ -23,34 +23,39 @@ const question = {
     }
 selectedAnswerId = '1'
 */
-function SingleSelectQuestion({questionNumber, question, selectedAnswerId, onAnswerChange}) {
-    
-    const handleOptionChange = (event) => {
-        selectedAnswerId = event.target.value
-        onAnswerChange(selectedAnswerId)
-    }
-    
-    return (
-        
-        <div>
-            {console.log("rendered single question, selectedAnswerId = ", selectedAnswerId)}
-            <h4>{`Q ${questionNumber}: ${question.text}`}</h4>
-                <div className='my-6'>
-                    {question.options.map((option, index) => (
-                        <div key={index}>
-                            <label className='flex my-3'>
-                                <input type="radio"
-                                    className='radio radio-primary mr-3'
-                                    value={option.id}
-                                    checked={option.id === selectedAnswerId}
-                                    onChange={handleOptionChange} />
-                                {option.text}
-                            </label>
-                        </div>
-                    ))}
+function SingleSelectQuestion({ questionNumber, question, selectedAnswerId, onAnswerChange, correctAnswer }) {
+
+  const handleOptionChange = (event) => {
+    selectedAnswerId = event.target.value
+    onAnswerChange(selectedAnswerId)
+  }
+
+  return (
+
+    <div>
+      <h4>{`Q ${questionNumber}: ${question.text}`}</h4>
+      <div className='my-6'>
+        {question.options.map((option, index) => (
+          <div key={index}>
+            <label className='flex my-3'>
+              <input type="radio"
+                className='radio radio-primary mr-3'
+                value={option.id}
+                checked={option.id === selectedAnswerId}
+                disabled={correctAnswer}
+                onChange={handleOptionChange} />
+              {correctAnswer && option.id === correctAnswer && (
+                <div className="tooltip tooltip-right mr-2" data-tip="This is the correct answer">
+                  <span className='text-green-500'>✅</span>
                 </div>
-        </div>
-    );
+              )}
+              {option.text}
+            </label>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 export default SingleSelectQuestion;

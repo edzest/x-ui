@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Nav from '../common/Nav';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ANSWER_SHEET } from '../constants/constants';
-
+import QuestionRenderer from '../questionnaire/question-renderer';
 function Solution() {
     const location = useLocation();
     const navigate = useNavigate();
@@ -51,7 +51,7 @@ function Solution() {
                     <div>
                         {status}
                     </div>
-                    <h4>{`Q ${currentIndex + 1}: ${answerSheet[currentIndex].question.text}`}</h4>
+                    {/* <h4>{`Q ${currentIndex + 1}: ${answerSheet[currentIndex].question.text}`}</h4>
                     <div className='my-6'>
                         {answerSheet[currentIndex].question.options.map((option, index) => (
                             <div key={index}>
@@ -71,7 +71,14 @@ function Solution() {
                                 </label>
                             </div>
                         ))}
-                    </div>
+                    </div> */}
+                    <QuestionRenderer
+                        questionNumber={currentIndex + 1}
+                        question={answerSheet[currentIndex].question}
+                        selectedAnswer={answerSheet[currentIndex].selectedAnswerId}
+                        onAnswerChange={() => { }}
+                        correctAnswer={answerSheet[currentIndex].question.correctOptionId}
+                    />
                     <h4 className='font-bold'>EXPLANATION</h4>
                     <p>{answerSheet[currentIndex].question.explanation}</p>
                     <div className='grid-cols-2 grid gap-4 mb-10 md:flex md:justify-between'>

@@ -3,7 +3,7 @@ import SingleSelectQuestion from '../single-select-question/SingleSelectQuestion
 import MultiSelectQuestion from '../multi-select-question/MultiSelectQuestion';
 import MatchingQuestion from '../matching-question/MatchingQuestion';
 
-function QuestionRenderer({ questionNumber, question, selectedAnswer, onAnswerChange }) {
+function QuestionRenderer({ questionNumber, question, selectedAnswer, onAnswerChange, correctAnswer}) {
     switch (question.questionType) {
         case 'single-select':
             return (
@@ -12,6 +12,7 @@ function QuestionRenderer({ questionNumber, question, selectedAnswer, onAnswerCh
                     question={question}
                     selectedAnswerId={selectedAnswer}
                     onAnswerChange={onAnswerChange} 
+                    correctAnswer={correctAnswer}
                 />
             );
         case 'multi-select':
@@ -21,6 +22,7 @@ function QuestionRenderer({ questionNumber, question, selectedAnswer, onAnswerCh
                     question={question}
                     selectedAnswerIds={selectedAnswer}
                     onAnswerChange={onAnswerChange} 
+                    correctAnswer={correctAnswer}
                 />
             );
         case 'matching-question':
@@ -30,6 +32,7 @@ function QuestionRenderer({ questionNumber, question, selectedAnswer, onAnswerCh
                     question={question}
                     selectedAnswer={selectedAnswer}
                     onAnswerChange={onAnswerChange} 
+                    correctAnswer={correctAnswer}
                 />
             );
         default:
