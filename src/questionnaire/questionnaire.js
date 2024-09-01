@@ -5,10 +5,10 @@ import { FiX } from "react-icons/fi";
 import MatchingQuestion from '../matching-question/MatchingQuestion';
 import SingleSelectQuestion from '../single-select-question/SingleSelectQuestion';
 import MultiSelectQuestion from '../multi-select-question/MultiSelectQuestion';
+import QuestionRenderer from './question-renderer';
 
 function Questionnaire() {
     const [questions, setQuestions] = useState(new Map());
-    // const [matchingQuestions, setMatchingQuestions] = useState(new Map());
     const [currentIndex, setCurrentIndex] = useState(0);
     const [answers, setAnswers] = useState({});
     const navigate = useNavigate();
@@ -18,36 +18,24 @@ function Questionnaire() {
     const evaluateTest = (answers) => {
         var score = 0;
         for (const [questionId, answer] of Object.entries(answers)) {
-            if (questions.has(parseInt(questionId))) {
-                if (questions.get(parseInt(questionId)).correctOptionId === answer) {
+            // setting selected answers
+            let a = ANSWER_SHEET.find(a => a.question.id === questionId);
+            a.selectedAnswerId = answer;
+            if (Array.isArray(a.question.correctOptionId)) {
+                // For multi-select questions
+                if (JSON.stringify(a.question.correctOptionId.sort()) === JSON.stringify(answer.sort())) {
                     score++;
                 }
-
-                // setting selected answers
-                let a = ANSWER_SHEET.find(a => a.question.id === questionId);
-                a.selectedAnswerId = answer;
-                console.log("setting aId = ", answer, " to qId = ", questionId);
-            // } else {
-            //     const q = matchingQuestions.get(parseInt(questionId));
-            //     const correctAnswer = q.answers;
-            //     if (correctAnswer.length !== answer.length) {
-            //         // if matchingQuestions left size is not matching answer size, then continue;
-            //         return;
-            //     } else {
-            //         let wrong = false;
-            //         for (let i = 0; i < answer.length; i++) {
-            //             const answerMapping = correctAnswer.find(a => a.leftId === answer[i].leftId);
-            //             if (answerMapping.rightId !== answer[i].rightId) {
-            //                 wrong = true;
-            //                 break;
-            //             }
-            //         }
-            //         if (!wrong) {
-            //             score++;
-            //         }
-
-            //     }
-
+            } else if (typeof a.question.correctOptionId === 'object') {
+                // For matching questions
+                if (JSON.stringify(a.question.correctOptionId) === JSON.stringify(answer)) {
+                    score++;
+                }
+            } else {
+                // For single-select questions
+                if (a.question.correctOptionId === answer) {
+                    score++;
+                }
             }
         }
         console.log("you scored " + score)
@@ -71,13 +59,7 @@ function Questionnaire() {
                     return map;
                 }, new Map());
 
-                // const matchingQuestionsMap = data['matchingQuestions'].reduce((map, matchingQuestion) => {
-                //     map.set(parseInt(matchingQuestion.id), matchingQuestion);
-                //     return map;
-                // }, new Map());
-
                 setQuestions(questionsMap);
-                // setMatchingQuestions(matchingQuestionsMap);
             })
             .then(resetAnswers())
             .catch(error => console.error(error));
@@ -95,7 +77,7 @@ function Questionnaire() {
 
     const handleClear = () => {
         setAnswers(prevAnswers => {
-            const updatedAnswers = {...prevAnswers}
+            const updatedAnswers = { ...prevAnswers }
             delete updatedAnswers[currentIndex + 1]
             console.log("updatedAnswer", updatedAnswers)
             return updatedAnswers
@@ -109,7 +91,7 @@ function Questionnaire() {
             resolve({
                 name: "Demo Test",
                 score: score,
-                total: 10,
+                total: questions.size,
                 answerSheet: []
             });
         })
@@ -120,52 +102,14 @@ function Questionnaire() {
             .catch(error => console.error(error));
     };
 
-    const handleMatchingQuestionChange = (matchingQuestionAnswer) => {
-        console.log("in handleMatchingQuestionChange, matchingQuestionAnswer = ", matchingQuestionAnswer)
+    const handleAnswerChange = useCallback((selectedAnswer) => {
         setAnswers({
             ...answers,
-            [currentIndex + 1]: matchingQuestionAnswer
-        });
-    }
-
-    const handleAnswerChange = useCallback((selectedAnswerId) => {
-        setAnswers({
-            ...answers,
-            [currentIndex + 1]: selectedAnswerId
+            [currentIndex + 1]: selectedAnswer
         })
     }, [currentIndex, answers])
 
     if (!questions.size) return <div>Loading...</div>;
-
-    const renderQuestion = (questionNumber, question, selectedAnswer) => {
-        switch (question.questionType) {
-            case 'single-select':
-                return (
-                    <SingleSelectQuestion questionNumber={questionNumber}
-                        question={question}
-                        selectedAnswerId={selectedAnswer}
-                        onAnswerChange={handleAnswerChange} />
-                )
-            case 'multi-select':
-                return (
-                    <MultiSelectQuestion
-                        questionNumber={questionNumber}
-                        question={question}
-                        selectedAnswerIds={selectedAnswer}
-                        onAnswerChange={handleAnswerChange} />
-                )
-            case 'matching-question':
-                return (
-                    <MatchingQuestion
-                        questionNumber={questionNumber}
-                        question={question}
-                        selectedAnswer={selectedAnswer}
-                        onAnswerChange={handleMatchingQuestionChange} />
-                )
-            default:
-                return <div></div>;
-        }
-    }
 
     return (
         <div className='container px-4 mx-auto not-prose max-w-screen-lg sm:block'>
@@ -175,12 +119,12 @@ function Questionnaire() {
             </div>
             <hr className='mt-0' />
             <br />
-            {
-                renderQuestion(currentIndex + 1,
-                    questions.get(currentIndex + 1),
-                    answers[currentIndex + 1]
-                )
-            }
+            <QuestionRenderer
+                questionNumber={currentIndex + 1}
+                question={questions.get(currentIndex + 1)}
+                selectedAnswer={answers[currentIndex + 1]}
+                onAnswerChange={handleAnswerChange}
+            />
 
 
             <div className='grid-cols-3 grid gap-4 mb-10 md:flex md:justify-between'>
