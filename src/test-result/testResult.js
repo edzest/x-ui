@@ -2,7 +2,6 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Nav from '../common/Nav';
 import Footer from '../common/Footer';
-import { PopupButton } from "react-calendly";
 
 function TestResult() {
     const location = useLocation();
@@ -39,25 +38,13 @@ function TestResult() {
                     </div>
                     <br />
                     <p className="prose mx-auto">
-                        Thanks for taking our demo test. You can now view detailed solutions and schedule a one-on-one call with our expert
-                        to review your result in detail.
+                        Thanks for taking our demo test. You can now view the detailed solutions.
                     </p>
                     <br />
                     <Link to="/solution">
-                        <button className='btn btn-link m-2'>View Solution</button>
+                        <button className='btn btn-primary m-2'>View Solution</button>
                     </Link>
-                    {/* <button className='btn btn-primary m-2' onClick={() => {Calendly.initPopupWidget({url: 'https://calendly.com/piyushranjan95'}); return false;}}>Schedule a meeting</button> */}
-                    <PopupButton
-                    className='btn btn-primary'
-                        url="https://calendly.com/piyushranjan95"
-                        /*
-                        * react-calendly uses React's Portal feature (https://reactjs.org/docs/portals.html) to render the popup modal. As a result, you'll need to
-                        * specify the rootElement property to ensure that the modal is inserted into the correct domNode.
-                        */
-                        rootElement={document.getElementById("root")}
-                        text="Schedule a meeting"
-
-                    />
+                    
                     <br />
 
                 </div>
