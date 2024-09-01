@@ -146,6 +146,53 @@ export const TEST = [
           }
         ],
       },
+      {
+        "id": "6", 
+        "questionType": "single-select", 
+        "text": "Your boss giving you a rough outline of the scope, constraints, and risks involved in a prospective client's project.  The project is highly like the project you are currently closing.  The sponsor wants to know how long this project would take your team to complete.  You think your team may need two months, but what should be your answer?  ", 
+        "options": [
+          {
+            "id": "1",
+            "text": "Let me run some numbers in a simulation and get back to you tomorrow." 
+          },
+          {
+            "id": "2",
+            "text": "Give us two months.We will knock it out just like the project that we are closing now." 
+          },
+          {
+            "id": "3",
+            "text": "If it truly resembles this project we are closing, it could be six to ten weeks. " 
+          },
+          {
+            "id": "4",
+            "text": "Considering the uncertainty in scope, I estimate three months. "
+          }
+        ]
+      },
+      {
+        "id": "7",
+        "questionType": "single-select",
+        "text": "As the project progresses, you notice that controlling the schedule becomes more and more challenging.  The variance between the schedule baseline and actual project performance changes with each completed iteration.  You realize that the traditional methods you are using to control the schedule are not well suited for the way the product is developed.  Which of the following practices should you avoid for the remainder of the project?  ",
+        "options": [
+          {
+            "id": "1",
+            "text": "Reprioritizing the backlog"
+          },
+          {
+            "id": "2",
+            "text": "Conducting retrospectives"
+          },
+          {
+            "id": "3",
+            "text": "Determining the velocity"
+          },
+          {
+            "id": "4",
+            "text": "Evaluating the critical path"
+          }
+        ]
+      }
+
     ],
   },
 ]
@@ -307,6 +354,62 @@ export const ANSWER_SHEET = [
       ],
       "correctOptionId": "4",
       "explanation": "The project discussed in the question is going through a lot of issues, in such cases, it is important to understand the root cause of the problem to bring the project back to control. One the best approaches will be to analyse the situation with the team and discuss to create an action plan. Option D talks about the analysis required to be done. All other options talk about some kind of decisions to be taken, which is not justified with the information given in the question. Reviewing and Analysing will help the team understand which actions would help the project the most. Hence, D is the best choice.  Exam tip: For any problems, concerns., issues etc. before taking a decision, it is always better to understand the situation and review/analyse to understand the best possible decisions to be taken in the project. Understand >> Analyse >> Decision."
+    },
+    "selectedAnswerId": ""
+  },
+  {
+    "question": {   
+      "id": "6", 
+      "questionType": "single-select", 
+        "text": "Your boss giving you a rough outline of the scope, constraints, and risks involved in a prospective client's project.  The project is highly like the project you are currently closing.  The sponsor wants to know how long this project would take your team to complete.  You think your team may need two months, but what should be your answer?  ", 
+        "options": [
+          {
+            "id": "1",
+            "text": "Let me run some numbers in a simulation and get back to you tomorrow." 
+          },
+          {
+            "id": "2",
+            "text": "Give us two months.We will knock it out just like the project that we are closing now." 
+          },
+          {
+            "id": "3",
+            "text": "If it truly resembles this project we are closing, it could be six to ten weeks. " 
+          },
+          {
+            "id": "4",
+            "text": "Considering the uncertainty in scope, I estimate three months. "
+          }
+        ],
+      "correctOptionId": "3",
+      "explanation": "Considering your immediate experience of a similar project, you should give estimate: the form of a range.  As a component of a schedule management plan, the level of accuracy specifies the acceptable range used in determining realistic duration estimates.  The range accounts for risk contingencies.  These contingencies may be some threats of delay or opportunities to gain efficiencies and accelerate the schedule.  A project in the initiation phase (which is the case in this scenario) might have a rough order of magnitude estimate in the -25 % to + 75 % range.  If you would estimate 8 weeks most likely, a rough range of 4 to 12 weeks is reasonable.  But that range is not among your answer choices.  Later, as more information becomes available, estimates could narrow to a range of +/- 10 %.  In the scenario provided, you have a team that is experienced in this kind of project, making the narrower range of six to ten weeks the best the available choices "
+    },
+    "selectedAnswerId": ""
+  },
+  {
+    "question": {
+      "id": "7",
+      "questionType": "single-select",
+      "text": "As the project progresses, you notice that controlling the schedule becomes more and more challenging.  The variance between the schedule baseline and actual project performance changes with each completed iteration.  You realize that the traditional methods you are using to control the schedule are not well suited for the way the product is developed.  Which of the following practices should you avoid for the remainder of the project?  ",
+        "options": [
+          {
+            "id": "1",
+            "text": "Reprioritizing the backlog"
+          },
+          {
+            "id": "2",
+            "text": "Conducting retrospectives"
+          },
+          {
+            "id": "3",
+            "text": "Determining the velocity"
+          },
+          {
+            "id": "4",
+            "text": "Evaluating the critical path"
+          }
+        ],
+      "correctOptionId": "4",
+      "explanation": "The scenario implies you are leading a hybrid project in which the product is being built iteratively while the schedule is controlled using the schedule baseline. This situation can happen when the performing organization is not mature enough with its project management approach. For example, the organization uses tools and techniques that are incompatible with the project processes, incorrectly tailors processes to a project, or implements any other combination of tools or techniques that is inconsistent with the selected development approach or project life cycle. The critical path method is one of the tools and techniques that can be used as part of the Control Schedule process implied by the scenario. However, this method is mainly applicable to projects that are managed using predictive approaches.  With this technique, the project's progress is compared along the critical path to determine the schedule status. A variance between the actual performance and the baseline will have a direct impact on the project end date. When agile approaches are used, e.g., when the product is developed using iterations, as described in the scenario, the Control Schedule process may include backlog reprioritization, iteration retrospectives, velocity calculation, etc.  Evaluating the variance between the schedule baseline and the critical path would not be useful for agile practices and, therefore, should be avoided."
     },
     "selectedAnswerId": ""
   }

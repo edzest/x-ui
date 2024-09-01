@@ -2,9 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { TEST, ANSWER_SHEET } from '../constants/constants';
 import { FiX } from "react-icons/fi";
-import MatchingQuestion from '../matching-question/MatchingQuestion';
-import SingleSelectQuestion from '../single-select-question/SingleSelectQuestion';
-import MultiSelectQuestion from '../multi-select-question/MultiSelectQuestion';
 import QuestionRenderer from './question-renderer';
 
 function Questionnaire() {

@@ -11,7 +11,7 @@ function TestResult() {
         answerSheet: []
     };
 
-    const percent = result.score / result.total * 100;
+    const percent = (result.score / result.total * 100).toFixed(2);
 
     return (
         <div className='flex flex-col min-h-screen'>
@@ -44,7 +44,11 @@ function TestResult() {
                     <Link to="/solution">
                         <button className='btn btn-primary m-2'>View Solution</button>
                     </Link>
-                    
+
+                    <Link to="/">
+                        <button className='btn btn-link m-2'>Back to Home</button>
+                    </Link>
+
                     <br />
 
                 </div>

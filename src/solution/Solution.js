@@ -3,6 +3,8 @@ import Nav from '../common/Nav';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ANSWER_SHEET } from '../constants/constants';
 import QuestionRenderer from '../questionnaire/question-renderer';
+import { FiX } from "react-icons/fi";
+
 function Solution() {
     const location = useLocation();
     const navigate = useNavigate();
@@ -62,7 +64,9 @@ function Solution() {
 
                 <div>
                     <div className='text-right'>
-                        <button onClick={() => navigate(-1)} className='btn btn-ghost btn-circle text-3xl font-light m-4'>X</button>
+                        <button onClick={() => navigate(-1)} className='btn btn-ghost btn-circle text-3xl font-light m-4'>
+                            <FiX />
+                        </button>
                     </div>
                     <hr className='mt-0' />
                     <div className='font-bold'>
