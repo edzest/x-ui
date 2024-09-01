@@ -7,8 +7,8 @@ import { PopupButton } from "react-calendly";
 function TestResult() {
     const location = useLocation();
     const result = location.state ? location.state.result : {
-        score: 7,
-        total: 10,
+        score: 4,
+        total: 5,
         answerSheet: []
     };
 
