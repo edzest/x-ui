@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { TEST, ANSWER_SHEET } from '../constants/constants';
+import { ANSWER_SHEET } from '../constants/constants';
 import { FiX } from "react-icons/fi";
 import QuestionRenderer from './question-renderer';
 
@@ -47,10 +47,13 @@ function Questionnaire() {
     }
 
     useEffect(() => {
-        new Promise((resolve, reject) => {
-            resolve(TEST[0]);
-        })
-            .then(data => {
+        fetch('/api/tests/1234')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        }).then(data => {
                 const questionsMap = data['questions'].reduce((map, question) => {
                     map.set(parseInt(question.id), question);
                     return map;
