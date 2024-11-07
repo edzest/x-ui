@@ -16,6 +16,10 @@ type App struct {
 
 func initApp(static fs.FS) *App {
 	e := echo.New()
+
+	e.GET("/api", handleIndex)
+	e.GET("/api/tests/:id", handleGetTest)
+
 	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
 		Root:       "/",
 		Index:      "index.html",
