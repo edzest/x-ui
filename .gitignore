@@ -22,3 +22,7 @@
 /uiyarn-debug.log*
 /ui/yarn-error.log*
 /ui/.vercel
+
+
+# application
+x
