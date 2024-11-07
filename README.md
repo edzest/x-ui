@@ -15,7 +15,4 @@ This repo houses the code of Edzest Test Platform. The codebase and the applicat
 
 
 ## Local Setup
- 
-
-# Deployment
-Once your PR is merged ask the person who made you read this to deploy the latest branch. Don't worry we'll improve this soon. 🤞
+Run `make` to build the ui & start the echo server
