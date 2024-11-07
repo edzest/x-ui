@@ -3,7 +3,7 @@ import TestCard from '../test-card/TestCard';
 import Nav from '../common/Nav';
 
 function Home() {
-    const tests = [];
+  const tests = [];
     return (
         <div>
             <Nav/>
