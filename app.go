@@ -19,6 +19,7 @@ func initApp(static fs.FS) *App {
 
 	e.GET("/api", handleIndex)
 	e.GET("/api/tests/:id", handleGetTest)
+	e.GET("/api/tests", handleTest)
 
 	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
 		Root:       "/",
